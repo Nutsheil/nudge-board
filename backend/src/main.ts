@@ -1,30 +1,25 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
+import { buildCorsConfig } from './config/cors.config';
+import type { Env } from './config/env.schema';
+import { validationConfig } from './config/validation.config';
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 3000;
-
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()),
-    credentials: true,
-  });
+  const config: ConfigService<Env, true> = app.get(ConfigService);
 
+  const port = config.getOrThrow('PORT', { infer: true });
+
+  app.enableCors(buildCorsConfig(config));
   app.use(cookieParser());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: false },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(validationConfig));
   app.enableShutdownHooks();
 
-  await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  await app.listen(port, () => console.log(`Server started on port ${port}`));
 }
 void bootstrap();

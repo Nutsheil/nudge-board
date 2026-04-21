@@ -1,9 +1,10 @@
-import { ConflictException,Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import type { StringValue } from 'ms';
 
+import type { Env } from '../config/env.schema';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -19,11 +20,11 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
-    configService: ConfigService,
+    config: ConfigService<Env, true>,
   ) {
-    this.jwtAccessExpiresIn = configService.getOrThrow<StringValue>('JWT_ACCESS_EXPIRES_IN');
-    this.jwtRefreshExpiresIn = configService.getOrThrow<StringValue>('JWT_REFRESH_EXPIRES_IN');
-    this.jwtRefreshSecret = configService.getOrThrow<string>('JWT_REFRESH_SECRET');
+    this.jwtAccessExpiresIn = config.getOrThrow('JWT_ACCESS_EXPIRES_IN', { infer: true });
+    this.jwtRefreshExpiresIn = config.getOrThrow('JWT_REFRESH_EXPIRES_IN', { infer: true });
+    this.jwtRefreshSecret = config.getOrThrow('JWT_REFRESH_SECRET', { infer: true });
   }
 
   async register(dto: RegisterDto) {

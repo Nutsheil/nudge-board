@@ -12,8 +12,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { CookieOptions, Request, Response } from 'express';
-import ms, { type StringValue } from 'ms';
+import ms from 'ms';
 
+import type { Env } from '../config/env.schema';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -26,9 +27,10 @@ export class AuthController {
 
   constructor(
     private readonly authService: AuthService,
-    config: ConfigService,
+    config: ConfigService<Env, true>,
   ) {
-    const ttl = ms(config.getOrThrow<StringValue>('JWT_REFRESH_EXPIRES_IN'));
+    const jwtRefreshExpiresIn = config.getOrThrow('JWT_REFRESH_EXPIRES_IN', { infer: true });
+    const ttl = ms(jwtRefreshExpiresIn);
     this.refreshCookieOptions = buildRefreshCookieOptions(ttl);
   }
 
