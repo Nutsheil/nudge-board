@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider as BaseRouterProvider } from 'react-router'
 
 import { AppLayout, AuthLayout, PublicLayout } from '@/app/layouts'
-import { LandingPage } from '@/pages/LandingPage'
-import { AuthPage } from '@/pages/AuthPage'
 import { AppPage } from '@/pages/AppPage'
+import { AuthPage } from '@/pages/AuthPage'
+import { LandingPage } from '@/pages/LandingPage'
 import { ROUTES } from '@/shared/config'
 
 import { PrivateRoute } from './PrivateRoute'

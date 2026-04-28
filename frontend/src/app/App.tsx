@@ -2,9 +2,9 @@ import { SnackbarProvider } from 'notistack'
 
 import { useSessionBootstrap } from '@/entities/session'
 
-import { ThemeProvider } from './providers/theme'
 import { RouterProvider } from './providers/router'
 import { StoreProvider } from './providers/store'
+import { ThemeProvider } from './providers/theme'
 
 const AppInner = () => {
   useSessionBootstrap()

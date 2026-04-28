@@ -1,8 +1,8 @@
-import { env } from '@/shared/config'
 import { createBaseQueryWithReauth } from '@/shared/api/baseQuery'
+import { env } from '@/shared/config'
 
-import { SESSION_SLICE_KEY, setCredentials, type WithSession } from '../model/slice'
 import { forceLogout } from '../model/forceLogout'
+import { SESSION_SLICE_KEY, setCredentials, type WithSession } from '../model/slice'
 import type { AuthResponse } from './sessionApi.types'
 
 export const baseQueryWithReauth = createBaseQueryWithReauth<WithSession, AuthResponse>({

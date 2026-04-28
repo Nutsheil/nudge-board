@@ -1,4 +1,5 @@
 import { createTheme, type Theme } from '@mui/material/styles'
+
 import { palettes, type PaletteName } from './palettes'
 import { shape, spacing, typography } from './tokens'
 

@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+
 import type { PaletteName } from '../palettes'
 
 export interface ThemeModeContextValue {

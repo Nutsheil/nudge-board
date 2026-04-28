@@ -1,9 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { setCredentials } from '../model/slice'
 import { forceLogout } from '../model/forceLogout'
+import { setCredentials } from '../model/slice'
 import { baseQueryWithReauth } from './baseQuery'
-
 import type { AuthResponse, LoginPayload, RegisterPayload } from './sessionApi.types'
 
 export const sessionApi = createApi({

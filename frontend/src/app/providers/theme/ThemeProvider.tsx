@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { createAppTheme, ThemeModeContext, type PaletteName, type ThemeModeContextValue } from '@/shared/config/theme'
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+
+import { createAppTheme, ThemeModeContext, type PaletteName, type ThemeModeContextValue } from '@/shared/config/theme'
 
 interface Props {
   children: ReactNode

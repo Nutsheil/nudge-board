@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+
 import { ThemeModeContext, type ThemeModeContextValue } from './ThemeModeContext'
 
 export const useThemeMode = (): ThemeModeContextValue => {

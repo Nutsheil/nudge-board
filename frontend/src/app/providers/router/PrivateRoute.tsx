@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from 'react-router'
 
-import { FullPageSpinner } from '@/shared/ui'
-import { useAppSelector } from '@/shared/store'
 import { ROUTES } from '@/shared/config'
+import { useAppSelector } from '@/shared/store'
+import { FullPageSpinner } from '@/shared/ui'
 
 export const PrivateRoute = () => {
   const { isAuth, bootstrapStatus } = useAppSelector((state) => state.session)

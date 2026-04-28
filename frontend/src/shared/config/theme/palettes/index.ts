@@ -1,6 +1,7 @@
 import type { PaletteOptions } from '@mui/material/styles'
-import { lightPalette } from './light'
+
 import { darkPalette } from './dark'
+import { lightPalette } from './light'
 
 export const palettes = {
   light: lightPalette,

@@ -1,6 +1,7 @@
 import { Box, Container, Paper, Link as MuiLink } from '@mui/material'
 import { Suspense } from 'react'
 import { Link, Outlet } from 'react-router'
+
 import { ROUTES } from '@/shared/config'
 
 export const AuthLayout = () => {
