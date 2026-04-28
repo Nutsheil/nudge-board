@@ -8,10 +8,12 @@ import { ROUTES } from '@/shared/config'
 
 import { PrivateRoute } from './PrivateRoute'
 import { PublicOnlyRoute } from './PublicOnlyRoute'
+import { RouteErrorElement } from './RouteErrorElement'
 
 const router = createBrowserRouter([
   {
     element: <PublicLayout />,
+    errorElement: <RouteErrorElement variant='public' />,
     children: [{ index: true, element: <LandingPage /> }],
   },
   {
@@ -19,6 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AuthLayout />,
+        errorElement: <RouteErrorElement variant='auth' />,
         children: [{ path: ROUTES.auth, element: <AuthPage /> }],
       },
     ],
@@ -28,6 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
+        errorElement: <RouteErrorElement variant='app' />,
         children: [{ path: ROUTES.app, element: <AppPage /> }],
       },
     ],
