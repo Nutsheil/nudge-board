@@ -1,6 +1,7 @@
 import { Box, AppBar, Toolbar, Typography, Button } from '@mui/material'
 import { Suspense } from 'react'
 import { Link, Outlet } from 'react-router'
+import { ROUTES } from '@/shared/config'
 
 export const PublicLayout = () => {
   return (
@@ -9,13 +10,13 @@ export const PublicLayout = () => {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography
             component={Link}
-            to='/'
+            to={ROUTES.landing}
             variant='h6'
             sx={{ color: 'inherit', textDecoration: 'none', fontWeight: 700 }}
           >
             NudgeBoard
           </Typography>
-          <Button component={Link} to='/auth' variant='contained'>
+          <Button component={Link} to={ROUTES.auth} variant='contained'>
             Войти
           </Button>
         </Toolbar>

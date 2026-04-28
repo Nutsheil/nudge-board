@@ -4,6 +4,7 @@ import { AppLayout, AuthLayout, PublicLayout } from '@/app/layouts'
 import { LandingPage } from '@/pages/LandingPage'
 import { AuthPage } from '@/pages/AuthPage'
 import { AppPage } from '@/pages/AppPage'
+import { ROUTES } from '@/shared/config'
 
 import { PrivateRoute } from './PrivateRoute'
 import { PublicOnlyRoute } from './PublicOnlyRoute'
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AuthLayout />,
-        children: [{ path: 'auth', element: <AuthPage /> }],
+        children: [{ path: ROUTES.auth, element: <AuthPage /> }],
       },
     ],
   },
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [{ path: 'app', element: <AppPage /> }],
+        children: [{ path: ROUTES.app, element: <AppPage /> }],
       },
     ],
   },

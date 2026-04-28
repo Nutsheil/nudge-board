@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router'
 
 import { FullPageSpinner } from '@/shared/ui'
 import { useAppSelector } from '@/shared/store'
+import { ROUTES } from '@/shared/config'
 
 export const PublicOnlyRoute = () => {
   const { isAuth, bootstrapStatus } = useAppSelector((state) => state.session)
@@ -11,7 +12,7 @@ export const PublicOnlyRoute = () => {
   }
 
   if (isAuth) {
-    return <Navigate to='/app' replace />
+    return <Navigate to={ROUTES.app} replace />
   }
 
   return <Outlet />

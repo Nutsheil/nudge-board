@@ -1,6 +1,7 @@
 import { Box, Container, Paper, Link as MuiLink } from '@mui/material'
 import { Suspense } from 'react'
 import { Link, Outlet } from 'react-router'
+import { ROUTES } from '@/shared/config'
 
 export const AuthLayout = () => {
   return (
@@ -16,7 +17,7 @@ export const AuthLayout = () => {
     >
       <Container maxWidth='xs' disableGutters>
         <Box sx={{ mb: 2 }}>
-          <MuiLink component={Link} to='/' underline='hover' color='text.secondary'>
+          <MuiLink component={Link} to={ROUTES.landing} underline='hover' color='text.secondary'>
             ← На главную
           </MuiLink>
         </Box>

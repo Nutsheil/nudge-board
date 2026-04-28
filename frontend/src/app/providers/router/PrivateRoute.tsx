@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router'
 
 import { FullPageSpinner } from '@/shared/ui'
 import { useAppSelector } from '@/shared/store'
+import { ROUTES } from '@/shared/config'
 
 export const PrivateRoute = () => {
   const { isAuth, bootstrapStatus } = useAppSelector((state) => state.session)
@@ -11,7 +12,7 @@ export const PrivateRoute = () => {
   }
 
   if (!isAuth) {
-    return <Navigate to='/auth' replace />
+    return <Navigate to={ROUTES.auth} replace />
   }
 
   return <Outlet />
