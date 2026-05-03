@@ -1,0 +1,7 @@
+export { FeaturesSection } from './FeaturesSection'
+export { FinalCtaSection } from './FinalCtaSection'
+export { HeroSection } from './HeroSection'
+export { HowItWorksSection } from './HowItWorksSection'
+export { Section } from './Section'
+export { SectionHeading } from './SectionHeading'
+export { StackSection } from './StackSection'

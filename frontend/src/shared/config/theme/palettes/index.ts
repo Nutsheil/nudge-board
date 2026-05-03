@@ -1,5 +1,6 @@
 import type { PaletteOptions } from '@mui/material/styles'
 
+import './types'
 import { darkPalette } from './dark'
 import { lightPalette } from './light'
 

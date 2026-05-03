@@ -1,3 +1,6 @@
+import '@fontsource-variable/inter/index.css'
+import '@fontsource-variable/geist-mono/index.css'
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 

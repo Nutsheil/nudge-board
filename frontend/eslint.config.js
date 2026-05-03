@@ -37,19 +37,15 @@ export default defineConfig([
       'import/order': [
         'error',
         {
-          groups: [
-            ['builtin', 'external'],
-            'internal',
-            ['parent', 'sibling', 'index'],
-          ],
+          groups: [['builtin', 'external'], 'internal', ['parent', 'sibling', 'index']],
           pathGroups: [
-            { pattern: '@/app/**',      group: 'internal', position: 'before' },
-            { pattern: '@/pages/**',    group: 'internal', position: 'before' },
-            { pattern: '@/widgets/**',  group: 'internal', position: 'before' },
+            { pattern: '@/app/**', group: 'internal', position: 'before' },
+            { pattern: '@/pages/**', group: 'internal', position: 'before' },
+            { pattern: '@/widgets/**', group: 'internal', position: 'before' },
             { pattern: '@/features/**', group: 'internal', position: 'before' },
             { pattern: '@/entities/**', group: 'internal', position: 'before' },
-            { pattern: '@/shared/**',   group: 'internal', position: 'before' },
-            { pattern: '../**',         group: 'sibling',  position: 'before' },
+            { pattern: '@/shared/**', group: 'internal', position: 'before' },
+            { pattern: '../**', group: 'sibling', position: 'before' },
           ],
           pathGroupsExcludedImportTypes: ['builtin'],
           distinctGroup: false,
@@ -62,10 +58,7 @@ export default defineConfig([
       'import/newline-after-import': 'error',
       'import/no-useless-path-segments': 'error',
 
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
 

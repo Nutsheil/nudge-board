@@ -8,10 +8,6 @@
     "typecheck:backend": "tsc -p backend/tsconfig.json --noEmit",
     "typecheck:frontend": "tsc -p frontend/tsconfig.app.json --noEmit"
   },
-  "lint-staged": {
-    "backend/**/*.ts": "eslint --fix --max-warnings=0",
-    "frontend/**/*.{ts,tsx}": "eslint --fix --max-warnings=0"
-  },
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0"
