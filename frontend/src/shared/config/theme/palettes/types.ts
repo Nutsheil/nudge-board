@@ -8,6 +8,9 @@ declare module '@mui/material/styles' {
       pillHover: string
       mockupHeader: string
       ctaGradientTop: string
+      heroGradientStart: string
+      heroGradientMid: string
+      heroGradientEnd: string
     }
     textExtra: {
       tertiary: string

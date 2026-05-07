@@ -35,6 +35,9 @@ export const lightPalette: PaletteOptions = {
     pillHover: '#e0d6f5',
     mockupHeader: '#f7f5fc',
     ctaGradientTop: '#efe9fb',
+    heroGradientStart: '#ede7f9',
+    heroGradientMid: '#e0d6f5',
+    heroGradientEnd: '#d4c5f0',
   },
   textExtra: {
     tertiary: '#6b6478',

@@ -13,6 +13,14 @@ export const createComponents = (base: Theme): ThemeOptions['components'] => ({
         backgroundColor: base.palette.divider,
         borderRadius: 3,
       },
+      'input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active':
+        {
+          WebkitBoxShadow: `0 0 0 1000px ${base.palette.background.paper} inset !important`,
+          WebkitTextFillColor: `${base.palette.text.primary} !important`,
+          borderColor: 'inherit !important',
+          outline: 'none !important',
+          borderRadius: '0 !important',
+        },
     },
   },
   MuiButton: {

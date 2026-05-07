@@ -37,6 +37,9 @@ export const darkPalette: PaletteOptions = {
     pillHover: '#221350',
     mockupHeader: '#110c28',
     ctaGradientTop: '#1a0d3d',
+    heroGradientStart: '#1a0855',
+    heroGradientMid: '#110933',
+    heroGradientEnd: '#0d0a1e',
   },
   textExtra: {
     tertiary: '#71717a',
