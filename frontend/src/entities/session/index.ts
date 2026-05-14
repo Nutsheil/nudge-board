@@ -1,3 +1,4 @@
+export { baseQueryWithReauth } from './api/baseQuery'
 export { sessionApi, useLoginMutation, useLogoutMutation, useRegisterMutation } from './api/sessionApi'
 export type { AuthResponse, LoginPayload, RegisterPayload } from './api/sessionApi.types'
 export { forceLogout } from './model/forceLogout'

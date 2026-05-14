@@ -1,0 +1,64 @@
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
+import { Box, Card, CardActionArea, CardContent, Chip, Stack, Typography } from '@mui/material'
+
+import type { Workspace, WorkspaceRole } from '../model/types'
+
+const ROLE_LABEL: Record<WorkspaceRole, string> = {
+  OWNER: 'Владелец',
+  ADMIN: 'Админ',
+  MEMBER: 'Участник',
+}
+
+const ROLE_COLOR: Record<WorkspaceRole, 'primary' | 'secondary' | 'default'> = {
+  OWNER: 'primary',
+  ADMIN: 'secondary',
+  MEMBER: 'default',
+}
+
+interface Props {
+  workspace: Workspace
+  onClick: () => void
+}
+
+export const WorkspaceCard = ({ workspace, onClick }: Props) => {
+  return (
+    <Card variant='outlined' sx={{ height: '100%' }}>
+      <CardActionArea onClick={onClick} sx={{ height: '100%', alignItems: 'stretch' }}>
+        <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Stack direction='row' spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Typography variant='h6' sx={{ fontWeight: 600, lineHeight: 1.25 }}>
+              {workspace.name}
+            </Typography>
+            <Chip size='small' label={ROLE_LABEL[workspace.role]} color={ROLE_COLOR[workspace.role]} />
+          </Stack>
+
+          <Typography
+            variant='body2'
+            color='text.secondary'
+            sx={{
+              flex: 1,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {workspace.description ?? 'Без описания'}
+          </Typography>
+
+          <Stack direction='row' spacing={2} sx={{ color: 'text.secondary' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <PeopleOutlinedIcon fontSize='small' />
+              <Typography variant='body2'>{workspace.membersCount}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <DashboardOutlinedIcon fontSize='small' />
+              <Typography variant='body2'>{workspace.boardsCount}</Typography>
+            </Box>
+          </Stack>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  )
+}

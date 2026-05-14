@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider as BaseRouterProvider } from 'react-router'
 
 import { AppLayout, AuthLayout, PublicLayout } from '@/app/layouts'
-import { AppPage } from '@/pages/AppPage'
 import { AuthPage } from '@/pages/AuthPage'
 import { LandingPage } from '@/pages/LandingPage'
+import { WorkspacePage } from '@/pages/WorkspacePage'
+import { WorkspaceSelectionPage } from '@/pages/WorkspaceSelectionPage'
 import { ROUTES } from '@/shared/config'
 
 import { PrivateRoute } from './PrivateRoute'
@@ -32,7 +33,10 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         errorElement: <RouteErrorElement variant='app' />,
-        children: [{ path: ROUTES.app, element: <AppPage /> }],
+        children: [
+          { path: ROUTES.app, element: <WorkspaceSelectionPage /> },
+          { path: ROUTES.workspacePattern, element: <WorkspacePage /> },
+        ],
       },
     ],
   },
