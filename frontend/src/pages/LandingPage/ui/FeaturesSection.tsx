@@ -17,7 +17,12 @@ const FeatureRow = ({ id, icon, reverse }: FeatureMeta) => {
       sx={{ alignItems: 'center' }}
     >
       <Stack spacing={2.5} sx={{ width: '100%', flex: 1 }}>
-        <Chip label={`+ ${t(`landing.features.${id}.tag`)}`} color='primary' variant='outlined' sx={{ width: 'fit-content' }} />
+        <Chip
+          label={`+ ${t(`landing.features.${id}.tag`)}`}
+          color='primary'
+          variant='outlined'
+          sx={{ width: 'fit-content' }}
+        />
         <Typography variant='h4'>{t(`landing.features.${id}.title`)}</Typography>
         <Typography variant='body1' sx={{ color: 'text.secondary' }}>
           {t(`landing.features.${id}.description`)}

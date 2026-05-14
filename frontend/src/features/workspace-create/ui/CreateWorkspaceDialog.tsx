@@ -35,11 +35,7 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <ZodForm
-        schema={createWorkspaceSchema}
-        defaultValues={{ name: '', description: '' }}
-        onSubmit={handleSubmit}
-      >
+      <ZodForm schema={createWorkspaceSchema} defaultValues={{ name: '', description: '' }} onSubmit={handleSubmit}>
         <DialogTitle>{t('workspace.create.title')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 1 }}>

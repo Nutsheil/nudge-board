@@ -37,7 +37,12 @@ export const RegisterForm = () => {
       onSubmit={handleSubmit}
     >
       <Stack spacing={2.5}>
-        <FormTextField name='name' label={t('auth.field.name.label')} placeholder={t('auth.field.name.placeholder')} fullWidth />
+        <FormTextField
+          name='name'
+          label={t('auth.field.name.label')}
+          placeholder={t('auth.field.name.placeholder')}
+          fullWidth
+        />
         <FormTextField name='email' label={t('auth.field.email.label')} placeholder='user@example.com' fullWidth />
         <FormPasswordField name='password' label={t('auth.field.password.label')} placeholder='••••••••' fullWidth />
         <FormPasswordField
