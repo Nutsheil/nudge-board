@@ -1,0 +1,21 @@
+{
+  "common": {
+    "login": "Log in",
+    "logout": "Log out",
+    "userMenu": {
+      "aria": "User menu"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "languageSwitch": {
+      "aria": "Switch language"
+    },
+    "routeError": {
+      "title": "Something went wrong",
+      "retry": "Try again",
+      "goHome": "Go home"
+    }
+  }
+}

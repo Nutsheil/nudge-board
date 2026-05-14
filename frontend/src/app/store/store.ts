@@ -10,8 +10,7 @@ export const store = configureStore({
     [sessionApi.reducerPath]: sessionApi.reducer,
     [workspaceApi.reducerPath]: workspaceApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sessionApi.middleware, workspaceApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sessionApi.middleware, workspaceApi.middleware),
 })
 
 setupListeners(store.dispatch)

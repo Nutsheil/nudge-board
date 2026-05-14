@@ -1,21 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material'
 import { useSnackbar } from 'notistack'
+import { useTranslation } from 'react-i18next'
 
 import { useCreateWorkspaceMutation } from '@/entities/workspace'
-import { isFetchError } from '@/shared/api/errors'
+import { getErrorKey } from '@/shared/api/errors'
 import { createFormFields, ZodForm } from '@/shared/ui'
 
 import { createWorkspaceSchema, type CreateWorkspaceValues } from '../model/schema'
 
 const { FormTextField } = createFormFields<CreateWorkspaceValues>()
-
-const getCreateErrorMessage = (err: unknown): string => {
-  if (isFetchError(err)) {
-    if (err.status === 'FETCH_ERROR') return 'Нет соединения с сервером. Проверьте интернет.'
-    if (typeof err.status === 'number' && err.status >= 500) return 'Сервер недоступен. Попробуйте позже.'
-  }
-  return 'Не удалось создать пространство. Попробуйте ещё раз.'
-}
 
 interface Props {
   open: boolean
@@ -25,6 +18,7 @@ interface Props {
 export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
   const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation()
   const { enqueueSnackbar } = useSnackbar()
+  const { t } = useTranslation(['workspace', 'errors'])
 
   const handleSubmit = async (values: CreateWorkspaceValues) => {
     try {
@@ -34,7 +28,8 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
       }).unwrap()
       onClose()
     } catch (err) {
-      enqueueSnackbar(getCreateErrorMessage(err), { variant: 'error' })
+      const key = getErrorKey(err, { fallback: 'errors.workspace.createFailed' })
+      enqueueSnackbar(t(key), { variant: 'error' })
     }
   }
 
@@ -45,14 +40,20 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
         defaultValues={{ name: '', description: '' }}
         onSubmit={handleSubmit}
       >
-        <DialogTitle>Новое пространство</DialogTitle>
+        <DialogTitle>{t('workspace.create.title')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 1 }}>
-            <FormTextField name='name' label='Название' placeholder='Например, Acme Team' fullWidth autoFocus />
+            <FormTextField
+              name='name'
+              label={t('workspace.create.field.name.label')}
+              placeholder={t('workspace.create.field.name.placeholder')}
+              fullWidth
+              autoFocus
+            />
             <FormTextField
               name='description'
-              label='Описание'
-              placeholder='Зачем это пространство (необязательно)'
+              label={t('workspace.create.field.description.label')}
+              placeholder={t('workspace.create.field.description.placeholder')}
               fullWidth
               multiline
               minRows={3}
@@ -61,10 +62,10 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={onClose} disabled={isLoading}>
-            Отмена
+            {t('workspace.create.cancel')}
           </Button>
           <Button type='submit' variant='contained' disabled={isLoading}>
-            Создать
+            {t('workspace.create.submit')}
           </Button>
         </DialogActions>
       </ZodForm>

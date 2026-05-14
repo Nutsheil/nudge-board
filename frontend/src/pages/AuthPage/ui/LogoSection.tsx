@@ -1,11 +1,10 @@
 import { Box, Stack, styled, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import { ThemeSwitch } from '@/widgets/ThemeSwitch'
 import { Logo } from '@/shared/ui'
 
-const FEATURES = ['Совместная работа в команде', 'Аналитика продуктивности', 'Удобный интерфейс']
-const TITLE = 'Управляй задачами умнее'
-const SUBTITLE = 'Организуй. Выбери приоритет. Выполни. Двигайся вперед'
+const FEATURE_KEYS = ['collaboration', 'analytics', 'ux'] as const
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -48,6 +47,8 @@ const Flashlight2 = styled(Box)(({ theme }) => ({
 }))
 
 export const LogoSection = () => {
+  const { t } = useTranslation('auth')
+
   return (
     <Root>
       <Box sx={{ position: 'absolute', top: 16, right: 16, display: { md: 'none' } }}>
@@ -61,21 +62,21 @@ export const LogoSection = () => {
         <Logo size='md' />
 
         <Typography variant='subtitle1' sx={{ color: 'secondary.light' }}>
-          {TITLE}
+          {t('auth.logo.title')}
         </Typography>
 
         <Typography variant='body2' sx={{ display: { xs: 'none', md: 'block' }, color: 'textExtra.tertiary' }}>
-          {SUBTITLE}
+          {t('auth.logo.subtitle')}
         </Typography>
 
         <Stack spacing={1.75} sx={{ display: { xs: 'none', md: 'flex' }, alignSelf: 'flex-start', pl: 2 }}>
-          {FEATURES.map((feature) => (
-            <Stack key={feature} direction='row' spacing={1.5} sx={{ alignItems: 'center' }}>
+          {FEATURE_KEYS.map((key) => (
+            <Stack key={key} direction='row' spacing={1.5} sx={{ alignItems: 'center' }}>
               <Typography variant='body2' sx={{ color: 'secondary.main' }}>
                 ✦
               </Typography>
               <Typography variant='body2' sx={{ color: 'secondary.light' }}>
-                {feature}
+                {t(`auth.logo.feature.${key}`)}
               </Typography>
             </Stack>
           ))}

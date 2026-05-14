@@ -1,0 +1,22 @@
+{
+  "validation": {
+    "email": {
+      "invalid": "Invalid email"
+    },
+    "password": {
+      "required": "Enter your password",
+      "tooShort": "Minimum 8 characters",
+      "mismatch": "Passwords don't match"
+    },
+    "name": {
+      "required": "Enter your name"
+    },
+    "workspaceName": {
+      "required": "Enter a name",
+      "tooLong": "No more than 64 characters"
+    },
+    "workspaceDescription": {
+      "tooLong": "No more than 500 characters"
+    }
+  }
+}

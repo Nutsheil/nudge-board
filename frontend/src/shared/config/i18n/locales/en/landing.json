@@ -1,0 +1,68 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Stop Juggling Tasks. Start Shipping.",
+      "description": "NudgeBoard is the Kanban-first task tracker for solo developers and small teams who just want to get things done.",
+      "primaryCta": "Get Started — Free",
+      "secondaryCta": "View Demo Board",
+      "mockupLabel": "Kanban Board Screenshot"
+    },
+    "features": {
+      "heading": {
+        "title": "Everything You Need, Nothing You Don't",
+        "subtitle": "All the tools your team needs to stay organized, track progress, and deliver faster."
+      },
+      "boards": {
+        "tag": "BOARDS",
+        "title": "Visual task management that just works",
+        "description": "Drag-and-drop Kanban with customizable columns, labels, and priorities. See your whole project at a glance.",
+        "mockupLabel": "Kanban Board Screenshot"
+      },
+      "tracking": {
+        "tag": "TRACKING",
+        "title": "Know exactly where your time goes",
+        "description": "Built-in time tracking per task. Start a timer, log hours manually, and export reports without leaving the board.",
+        "mockupLabel": "Time Tracking Screenshot"
+      },
+      "offline": {
+        "tag": "OFFLINE",
+        "title": "Works anywhere, even without internet",
+        "description": "Install as a PWA and keep working offline. Changes sync automatically when you reconnect.",
+        "mockupLabel": "PWA / Offline Screenshot"
+      }
+    },
+    "howItWorks": {
+      "heading": {
+        "title": "Get from zero to shipped in three steps",
+        "subtitle": "No complex setup. No steep learning curve. Just a clear path from idea to done."
+      },
+      "steps": {
+        "create": {
+          "title": "Create a board",
+          "description": "Set up your project board in seconds. Name it, pick a color, and you're ready to go."
+        },
+        "add": {
+          "title": "Add tasks",
+          "description": "Create cards, assign priorities, set due dates, and drag them across columns as work progresses."
+        },
+        "track": {
+          "title": "Track & ship",
+          "description": "Use built-in time tracking and progress views to stay on schedule. Ship with confidence."
+        }
+      }
+    },
+    "stack": {
+      "heading": {
+        "title": "Built with tools you already know",
+        "subtitle": "A modern, production-ready stack — no bloat, no surprises."
+      },
+      "repoLabel": "View source on GitHub"
+    },
+    "finalCta": {
+      "title": "Ready to take control of your tasks?",
+      "subtitle": "Join developers and teams who replaced chaos with clarity.",
+      "cta": "Create Free Account",
+      "caption": "No credit card required · Cancel anytime"
+    }
+  }
+}

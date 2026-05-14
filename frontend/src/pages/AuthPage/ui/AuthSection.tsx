@@ -1,6 +1,7 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Box, Paper, Stack, Link as MuiLink, styled, Tab, Tabs, Typography, Container } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { ThemeSwitch } from '@/widgets/ThemeSwitch'
@@ -9,16 +10,6 @@ import { RegisterForm } from '@/features/register-by-email'
 import { ROUTES } from '@/shared/config'
 
 type AuthTab = 'login' | 'register'
-
-const TITLE = 'Добро пожаловать'
-const SUBTITLES: Record<AuthTab, string> = {
-  login: 'Войдите в свой аккаунт',
-  register: 'Создайте новый аккаунт',
-}
-const TAB_LABELS: Record<AuthTab, string> = {
-  login: 'Вход',
-  register: 'Регистрация',
-}
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -31,6 +22,7 @@ const Root = styled(Box)(({ theme }) => ({
 
 export const AuthSection = () => {
   const [tab, setTab] = useState<AuthTab>('login')
+  const { t } = useTranslation('auth')
 
   return (
     <Root sx={{ px: { xs: 3, md: 0 }, py: { xs: 5, md: 0 } }}>
@@ -48,7 +40,7 @@ export const AuthSection = () => {
             sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
           >
             <ArrowBackIcon fontSize='small' />
-            На главную
+            {t('auth.backToLanding')}
           </MuiLink>
         </Box>
 
@@ -64,9 +56,9 @@ export const AuthSection = () => {
         >
           <Stack spacing={3}>
             <Stack spacing={1}>
-              <Typography variant='h5'>{TITLE}</Typography>
+              <Typography variant='h5'>{t('auth.welcome.title')}</Typography>
               <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                {SUBTITLES[tab]}
+                {t(`auth.welcome.subtitle.${tab}`)}
               </Typography>
             </Stack>
 
@@ -81,8 +73,8 @@ export const AuthSection = () => {
                 '& .MuiTab-root.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
               }}
             >
-              <Tab value='login' label={TAB_LABELS.login} />
-              <Tab value='register' label={TAB_LABELS.register} />
+              <Tab value='login' label={t('auth.tab.login')} />
+              <Tab value='register' label={t('auth.tab.register')} />
             </Tabs>
 
             {tab === 'login' ? <LoginForm /> : <RegisterForm />}

@@ -1,14 +1,9 @@
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
 import { Box, Card, CardActionArea, CardContent, Chip, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import type { Workspace, WorkspaceRole } from '../model/types'
-
-const ROLE_LABEL: Record<WorkspaceRole, string> = {
-  OWNER: 'Владелец',
-  ADMIN: 'Админ',
-  MEMBER: 'Участник',
-}
 
 const ROLE_COLOR: Record<WorkspaceRole, 'primary' | 'secondary' | 'default'> = {
   OWNER: 'primary',
@@ -22,6 +17,8 @@ interface Props {
 }
 
 export const WorkspaceCard = ({ workspace, onClick }: Props) => {
+  const { t } = useTranslation('workspace')
+
   return (
     <Card variant='outlined' sx={{ height: '100%' }}>
       <CardActionArea onClick={onClick} sx={{ height: '100%', alignItems: 'stretch' }}>
@@ -30,7 +27,11 @@ export const WorkspaceCard = ({ workspace, onClick }: Props) => {
             <Typography variant='h6' sx={{ fontWeight: 600, lineHeight: 1.25 }}>
               {workspace.name}
             </Typography>
-            <Chip size='small' label={ROLE_LABEL[workspace.role]} color={ROLE_COLOR[workspace.role]} />
+            <Chip
+              size='small'
+              label={t(`workspace.role.${workspace.role.toLowerCase()}`)}
+              color={ROLE_COLOR[workspace.role]}
+            />
           </Stack>
 
           <Typography
@@ -44,7 +45,7 @@ export const WorkspaceCard = ({ workspace, onClick }: Props) => {
               overflow: 'hidden',
             }}
           >
-            {workspace.description ?? 'Без описания'}
+            {workspace.description ?? t('workspace.card.noDescription')}
           </Typography>
 
           <Stack direction='row' spacing={2} sx={{ color: 'text.secondary' }}>

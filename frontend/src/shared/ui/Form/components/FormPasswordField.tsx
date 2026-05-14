@@ -3,6 +3,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { IconButton, InputAdornment } from '@mui/material'
 import { useState } from 'react'
 import type { FieldValues } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { FormTextField } from './FormTextField'
 import type { FormTextFieldProps } from './FormTextField'
@@ -17,6 +18,7 @@ export const FormPasswordField = <TFieldValues extends FieldValues = FieldValues
 ) => {
   const { slotProps, ...rest } = props
   const [show, setShow] = useState(false)
+  const { t } = useTranslation('common')
 
   return (
     <FormTextField<TFieldValues>
@@ -29,7 +31,7 @@ export const FormPasswordField = <TFieldValues extends FieldValues = FieldValues
           endAdornment: (
             <InputAdornment position='end'>
               <IconButton
-                aria-label={show ? 'Скрыть пароль' : 'Показать пароль'}
+                aria-label={show ? t('common.password.hide') : t('common.password.show')}
                 edge='end'
                 size='small'
                 onClick={() => setShow((prev) => !prev)}

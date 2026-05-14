@@ -1,6 +1,8 @@
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { DEFAULT_LANGUAGE, isLanguage, type Language } from '@/shared/config/i18n'
 import { createAppTheme, ThemeModeContext, type PaletteName, type ThemeModeContextValue } from '@/shared/config/theme'
 
 interface Props {
@@ -46,7 +48,11 @@ export const ThemeProvider = (props: Props) => {
   }, [])
 
   const toggle = useCallback(() => setPalette((prev) => (prev === 'dark' ? 'light' : 'dark')), [])
-  const theme = useMemo(() => createAppTheme(palette), [palette])
+
+  const { i18n } = useTranslation()
+  const language: Language = isLanguage(i18n.language) ? i18n.language : DEFAULT_LANGUAGE
+
+  const theme = useMemo(() => createAppTheme(palette, language), [palette, language])
 
   const contextValue = useMemo<ThemeModeContextValue>(() => ({ palette, setPalette, toggle }), [palette, toggle])
 

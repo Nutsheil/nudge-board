@@ -1,0 +1,38 @@
+{
+  "workspace": {
+    "role": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "card": {
+      "noDescription": "No description"
+    },
+    "list": {
+      "title": "Your workspaces",
+      "subtitle": "Choose a workspace to continue, or create a new one.",
+      "retry": "Retry",
+      "loadError": "Failed to load workspaces.",
+      "create": "Create workspace",
+      "empty": {
+        "title": "You don't have any workspaces yet",
+        "subtitle": "Create your first one to start working with boards and tasks."
+      }
+    },
+    "create": {
+      "title": "New workspace",
+      "cancel": "Cancel",
+      "submit": "Create",
+      "field": {
+        "name": {
+          "label": "Name",
+          "placeholder": "e.g. Acme Team"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "What is this workspace for (optional)"
+        }
+      }
+    }
+  }
+}

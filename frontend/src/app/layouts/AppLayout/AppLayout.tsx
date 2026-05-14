@@ -1,12 +1,16 @@
-import { AppBar, Avatar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
+import { AppBar, Avatar, Box, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from '@mui/material'
 import { type MouseEvent, Suspense, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router'
 
+import { LanguageSwitch } from '@/widgets/LanguageSwitch'
+import { ThemeSwitch } from '@/widgets/ThemeSwitch'
 import { useLogoutMutation } from '@/entities/session'
 
 export const AppLayout = () => {
   const [logout] = useLogoutMutation()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const { t } = useTranslation('common')
 
   const open = Boolean(anchorEl)
   const closeMenu = () => setAnchorEl(null)
@@ -24,9 +28,13 @@ export const AppLayout = () => {
           <Typography variant='h6' sx={{ fontWeight: 700 }}>
             NudgeBoard
           </Typography>
-          <IconButton size='small' onClick={openMenu} aria-label='Меню пользователя'>
-            <Avatar sx={{ width: 32, height: 32 }} />
-          </IconButton>
+          <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
+            <LanguageSwitch />
+            <ThemeSwitch />
+            <IconButton size='small' onClick={openMenu} aria-label={t('common.userMenu.aria')}>
+              <Avatar sx={{ width: 32, height: 32 }} />
+            </IconButton>
+          </Stack>
           <Menu
             anchorEl={anchorEl}
             open={open}
@@ -34,7 +42,7 @@ export const AppLayout = () => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
-            <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+            <MenuItem onClick={handleLogout}>{t('common.logout')}</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

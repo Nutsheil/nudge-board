@@ -1,0 +1,22 @@
+{
+  "validation": {
+    "email": {
+      "invalid": "Некорректный email"
+    },
+    "password": {
+      "required": "Введите пароль",
+      "tooShort": "Минимум 8 символов",
+      "mismatch": "Пароли не совпадают"
+    },
+    "name": {
+      "required": "Введите имя"
+    },
+    "workspaceName": {
+      "required": "Введите название",
+      "tooLong": "Не более 64 символов"
+    },
+    "workspaceDescription": {
+      "tooLong": "Не более 500 символов"
+    }
+  }
+}

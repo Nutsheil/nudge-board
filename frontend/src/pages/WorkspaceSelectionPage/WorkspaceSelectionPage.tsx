@@ -1,5 +1,6 @@
 import { Alert, Box, Button, Container, Grid, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { CreateWorkspaceDialog } from '@/features/workspace-create'
@@ -12,6 +13,7 @@ const WorkspaceSelectionPage = () => {
   const navigate = useNavigate()
   const [dialogOpen, setDialogOpen] = useState(false)
   const { data: workspaces, isLoading, isError, refetch } = useGetWorkspacesQuery()
+  const { t } = useTranslation('workspace')
 
   const openDialog = () => setDialogOpen(true)
   const closeDialog = () => setDialogOpen(false)
@@ -25,11 +27,11 @@ const WorkspaceSelectionPage = () => {
           severity='error'
           action={
             <Button color='inherit' size='small' onClick={() => void refetch()}>
-              Повторить
+              {t('workspace.list.retry')}
             </Button>
           }
         >
-          Не удалось загрузить список пространств.
+          {t('workspace.list.loadError')}
         </Alert>
       )
     }
@@ -48,12 +50,12 @@ const WorkspaceSelectionPage = () => {
           }}
         >
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
-            <Typography variant='h6'>У вас пока нет пространств</Typography>
+            <Typography variant='h6'>{t('workspace.list.empty.title')}</Typography>
             <Typography variant='body2' color='text.secondary'>
-              Создайте первое, чтобы начать работу с досками и задачами.
+              {t('workspace.list.empty.subtitle')}
             </Typography>
             <Button variant='contained' onClick={openDialog}>
-              Создать пространство
+              {t('workspace.list.create')}
             </Button>
           </Stack>
         </Box>
@@ -79,10 +81,10 @@ const WorkspaceSelectionPage = () => {
       <Stack spacing={4}>
         <Stack spacing={1}>
           <Typography variant='h4' sx={{ fontWeight: 700 }}>
-            Ваши пространства
+            {t('workspace.list.title')}
           </Typography>
           <Typography variant='body1' color='text.secondary'>
-            Выберите пространство, чтобы продолжить, или создайте новое.
+            {t('workspace.list.subtitle')}
           </Typography>
         </Stack>
 

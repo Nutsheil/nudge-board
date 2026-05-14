@@ -1,0 +1,19 @@
+{
+  "errors": {
+    "auth": {
+      "invalidCredentials": "Invalid email or password",
+      "emailTaken": "This email is already taken",
+      "loginFailed": "Failed to sign in. Please try again.",
+      "registerFailed": "Failed to create account. Please try again."
+    },
+    "network": {
+      "offline": "No connection to the server. Please check your internet."
+    },
+    "server": {
+      "unavailable": "Server is unavailable. Please try later."
+    },
+    "workspace": {
+      "createFailed": "Failed to create workspace. Please try again."
+    }
+  }
+}

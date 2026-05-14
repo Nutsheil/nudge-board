@@ -3,6 +3,8 @@ import type { TextFieldProps } from '@mui/material'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { useTranslateError } from '@/shared/lib'
+
 type BaseProps = Omit<TextFieldProps, 'name' | 'value' | 'onChange' | 'onBlur' | 'error' | 'inputRef' | 'defaultValue'>
 export type FormTextFieldProps<TFieldValues extends FieldValues = FieldValues> = BaseProps & {
   name: FieldPath<TFieldValues>
@@ -13,6 +15,7 @@ export const FormTextField = <TFieldValues extends FieldValues = FieldValues>(
 ) => {
   const { name, helperText, ...rest } = props
   const { control } = useFormContext<TFieldValues>()
+  const translateError = useTranslateError()
 
   return (
     <Controller
@@ -25,7 +28,7 @@ export const FormTextField = <TFieldValues extends FieldValues = FieldValues>(
           value={field.value ?? ''}
           inputRef={field.ref}
           error={Boolean(fieldState.error)}
-          helperText={fieldState.error?.message ?? helperText}
+          helperText={translateError(fieldState.error?.message) ?? helperText}
         />
       )}
     />

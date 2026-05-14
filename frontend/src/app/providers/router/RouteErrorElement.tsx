@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router'
 
 import { forceLogout } from '@/entities/session'
@@ -27,6 +28,7 @@ export const RouteErrorElement = (props: Props) => {
   const error = useRouteError()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { t } = useTranslation('common')
 
   const message = getMessage(error)
   const isDev = import.meta.env.DEV
@@ -54,24 +56,27 @@ export const RouteErrorElement = (props: Props) => {
       }}
     >
       <Stack spacing={2} sx={{ alignItems: 'center', maxWidth: 480 }}>
-        <Typography variant='h5'>Что-то пошло не так</Typography>
+        <Typography variant='h5'>{t('common.routeError.title')}</Typography>
+
         {isDev && (
           <Typography variant='body2' color='text.secondary' sx={{ wordBreak: 'break-word' }}>
             {message}
           </Typography>
         )}
+
         <Stack direction='row' spacing={1}>
           <Button variant='contained' onClick={reload}>
-            Попробовать снова
+            {t('common.routeError.retry')}
           </Button>
+
           {(variant === 'public' || variant === 'auth') && (
             <Button variant='outlined' onClick={goHome}>
-              На главную
+              {t('common.routeError.goHome')}
             </Button>
           )}
           {variant === 'app' && (
             <Button variant='outlined' onClick={handleLogout}>
-              Выйти
+              {t('common.logout')}
             </Button>
           )}
         </Stack>
