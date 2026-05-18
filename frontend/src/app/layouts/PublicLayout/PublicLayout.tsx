@@ -6,6 +6,7 @@ import { Link, Outlet } from 'react-router'
 import { LanguageSwitch } from '@/widgets/LanguageSwitch'
 import { ThemeSwitch } from '@/widgets/ThemeSwitch'
 import { ROUTES } from '@/shared/config'
+import { Logo } from '@/shared/ui'
 
 export const PublicLayout = () => {
   const { t } = useTranslation('common')
@@ -14,14 +15,9 @@ export const PublicLayout = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <AppBar position='static' color='default' elevation={0}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography
-            component={Link}
-            to={ROUTES.landing}
-            variant='h6'
-            sx={{ color: 'inherit', textDecoration: 'none', fontWeight: 700 }}
-          >
-            NudgeBoard
-          </Typography>
+          <Box component={Link} to={ROUTES.landing} sx={{ color: 'inherit', textDecoration: 'none' }}>
+            <Logo size='sm' />
+          </Box>
 
           <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
             <LanguageSwitch />

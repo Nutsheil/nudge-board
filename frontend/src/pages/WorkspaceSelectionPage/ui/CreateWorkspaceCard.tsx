@@ -30,9 +30,7 @@ export const CreateWorkspaceCard = ({ onClick }: Props) => {
       >
         <Stack spacing={1} sx={{ alignItems: 'center', color: 'text.secondary' }}>
           <AddIcon fontSize='large' />
-          <Typography variant='subtitle1' sx={{ fontWeight: 500 }}>
-            {t('workspace.list.create')}
-          </Typography>
+          <Typography variant='subtitle1'>{t('workspace.list.create')}</Typography>
         </Stack>
       </CardActionArea>
     </Card>

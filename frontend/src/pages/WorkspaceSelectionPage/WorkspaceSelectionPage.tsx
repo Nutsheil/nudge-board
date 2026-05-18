@@ -26,7 +26,7 @@ const WorkspaceSelectionPage = () => {
         <Alert
           severity='error'
           action={
-            <Button color='inherit' size='small' onClick={() => void refetch()}>
+            <Button color='inherit' size='small' onClick={() => refetch()}>
               {t('workspace.list.retry')}
             </Button>
           }
@@ -51,7 +51,7 @@ const WorkspaceSelectionPage = () => {
         >
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <Typography variant='h6'>{t('workspace.list.empty.title')}</Typography>
-            <Typography variant='body2' color='text.secondary'>
+            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
               {t('workspace.list.empty.subtitle')}
             </Typography>
             <Button variant='contained' onClick={openDialog}>
@@ -69,7 +69,7 @@ const WorkspaceSelectionPage = () => {
         </Grid>
         {workspaces.map((ws) => (
           <Grid key={ws.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <WorkspaceCard workspace={ws} onClick={() => void navigate(ROUTES.workspace(ws.id))} />
+            <WorkspaceCard workspace={ws} onClick={() => navigate(ROUTES.workspace(ws.id))} />
           </Grid>
         ))}
       </Grid>
@@ -80,10 +80,8 @@ const WorkspaceSelectionPage = () => {
     <Container maxWidth='lg' sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={4}>
         <Stack spacing={1}>
-          <Typography variant='h4' sx={{ fontWeight: 700 }}>
-            {t('workspace.list.title')}
-          </Typography>
-          <Typography variant='body1' color='text.secondary'>
+          <Typography variant='h4'>{t('workspace.list.title')}</Typography>
+          <Typography variant='body1' sx={{ color: 'text.secondary' }}>
             {t('workspace.list.subtitle')}
           </Typography>
         </Stack>

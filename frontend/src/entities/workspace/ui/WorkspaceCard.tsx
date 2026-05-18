@@ -24,9 +24,7 @@ export const WorkspaceCard = ({ workspace, onClick }: Props) => {
       <CardActionArea onClick={onClick} sx={{ height: '100%', alignItems: 'stretch' }}>
         <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <Stack direction='row' spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <Typography variant='h6' sx={{ fontWeight: 600, lineHeight: 1.25 }}>
-              {workspace.name}
-            </Typography>
+            <Typography variant='h6'>{workspace.name}</Typography>
             <Chip
               size='small'
               label={t(`workspace.role.${workspace.role.toLowerCase()}`)}
@@ -36,8 +34,8 @@ export const WorkspaceCard = ({ workspace, onClick }: Props) => {
 
           <Typography
             variant='body2'
-            color='text.secondary'
             sx={{
+              color: 'text.secondary',
               flex: 1,
               display: '-webkit-box',
               WebkitLineClamp: 3,

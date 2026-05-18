@@ -22,10 +22,7 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
 
   const handleSubmit = async (values: CreateWorkspaceValues) => {
     try {
-      await createWorkspace({
-        name: values.name,
-        description: values.description?.length ? values.description : undefined,
-      }).unwrap()
+      await createWorkspace(values).unwrap()
       onClose()
     } catch (err) {
       const key = getErrorKey(err, { fallback: 'errors.workspace.createFailed' })
@@ -44,7 +41,6 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
               label={t('workspace.create.field.name.label')}
               placeholder={t('workspace.create.field.name.placeholder')}
               fullWidth
-              autoFocus
             />
             <FormTextField
               name='description'
@@ -57,7 +53,7 @@ export const CreateWorkspaceDialog = ({ open, onClose }: Props) => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={onClose} disabled={isLoading}>
+          <Button onClick={onClose} variant='outlined' disabled={isLoading}>
             {t('workspace.create.cancel')}
           </Button>
           <Button type='submit' variant='contained' disabled={isLoading}>

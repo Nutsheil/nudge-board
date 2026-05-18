@@ -59,7 +59,7 @@ export const RouteErrorElement = (props: Props) => {
         <Typography variant='h5'>{t('common.routeError.title')}</Typography>
 
         {isDev && (
-          <Typography variant='body2' color='text.secondary' sx={{ wordBreak: 'break-word' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary', wordBreak: 'break-word' }}>
             {message}
           </Typography>
         )}

@@ -11,18 +11,18 @@ const WorkspacePage = () => {
     <Container maxWidth='md' sx={{ py: { xs: 4, md: 8 } }}>
       <Stack spacing={3}>
         <Box>
-          <Typography variant='overline' color='text.secondary'>
+          <Typography variant='overline' sx={{ color: 'text.secondary' }}>
             Workspace
           </Typography>
-          <Typography variant='h4' sx={{ fontWeight: 700, wordBreak: 'break-all' }}>
+          <Typography variant='h4' sx={{ wordBreak: 'break-all' }}>
             {workspaceId}
           </Typography>
         </Box>
-        <Typography variant='body1' color='text.secondary'>
+        <Typography variant='body1' sx={{ color: 'text.secondary' }}>
           Здесь скоро появятся доски и задачи этого пространства.
         </Typography>
         <Box>
-          <Button variant='outlined' onClick={() => void navigate(ROUTES.app)}>
+          <Button variant='outlined' onClick={() => navigate(ROUTES.app)}>
             К списку пространств
           </Button>
         </Box>
