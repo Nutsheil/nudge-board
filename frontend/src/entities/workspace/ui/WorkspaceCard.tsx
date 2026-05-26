@@ -1,11 +1,11 @@
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
-import { Box, Card, CardActionArea, CardContent, Chip, Stack, Typography } from '@mui/material'
+import { Box, Card, CardActionArea, CardContent, Chip, Stack, Typography, type ChipProps } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
 import type { Workspace, WorkspaceRole } from '../model/types'
 
-const ROLE_COLOR: Record<WorkspaceRole, 'primary' | 'secondary' | 'default'> = {
+const ROLE_COLOR: Record<WorkspaceRole, ChipProps['color']> = {
   OWNER: 'primary',
   ADMIN: 'secondary',
   MEMBER: 'default',

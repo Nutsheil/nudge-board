@@ -10,14 +10,7 @@ export const CreateWorkspaceCard = ({ onClick }: Props) => {
   const { t } = useTranslation('workspace')
 
   return (
-    <Card
-      variant='outlined'
-      sx={{
-        height: '100%',
-        borderStyle: 'dashed',
-        bgcolor: 'transparent',
-      }}
-    >
+    <Card variant='outlined' sx={{ height: '100%', borderStyle: 'dashed', bgcolor: 'transparent' }}>
       <CardActionArea
         onClick={onClick}
         sx={{

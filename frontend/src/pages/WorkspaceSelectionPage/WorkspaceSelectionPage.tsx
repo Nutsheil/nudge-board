@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Container, Grid, Stack, Typography } from '@mui/material'
+import { Container, Grid, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -7,7 +7,7 @@ import { CreateWorkspaceDialog } from '@/features/workspace-create'
 import { useGetWorkspacesQuery, WorkspaceCard } from '@/entities/workspace'
 import { ROUTES } from '@/shared/config'
 
-import { CreateWorkspaceCard, WorkspaceGridSkeleton } from './ui'
+import { CreateWorkspaceCard, NoWorkspaces, WorkspaceGridSkeleton, WorkspacesError } from './ui'
 
 const WorkspaceSelectionPage = () => {
   const navigate = useNavigate()
@@ -19,47 +19,16 @@ const WorkspaceSelectionPage = () => {
   const closeDialog = () => setDialogOpen(false)
 
   const renderContent = () => {
-    if (isLoading) return <WorkspaceGridSkeleton />
+    if (isLoading) {
+      return <WorkspaceGridSkeleton />
+    }
 
     if (isError) {
-      return (
-        <Alert
-          severity='error'
-          action={
-            <Button color='inherit' size='small' onClick={() => refetch()}>
-              {t('workspace.list.retry')}
-            </Button>
-          }
-        >
-          {t('workspace.list.loadError')}
-        </Alert>
-      )
+      return <WorkspacesError onRefreshClick={() => refetch()} />
     }
 
     if (!workspaces || workspaces.length === 0) {
-      return (
-        <Box
-          sx={{
-            border: 1,
-            borderStyle: 'dashed',
-            borderColor: 'divider',
-            borderRadius: 2,
-            py: 8,
-            px: 3,
-            textAlign: 'center',
-          }}
-        >
-          <Stack spacing={2} sx={{ alignItems: 'center' }}>
-            <Typography variant='h6'>{t('workspace.list.empty.title')}</Typography>
-            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-              {t('workspace.list.empty.subtitle')}
-            </Typography>
-            <Button variant='contained' onClick={openDialog}>
-              {t('workspace.list.create')}
-            </Button>
-          </Stack>
-        </Box>
-      )
+      return <NoWorkspaces onButtonCreateClick={openDialog} />
     }
 
     return (
