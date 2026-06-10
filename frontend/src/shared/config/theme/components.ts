@@ -3,6 +3,12 @@ import type { Theme, ThemeOptions } from '@mui/material/styles'
 export const createComponents = (base: Theme): ThemeOptions['components'] => ({
   MuiCssBaseline: {
     styleOverrides: {
+      body: {
+        fontOpticalSizing: 'auto',
+        fontKerning: 'normal',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+      },
       '*': {
         scrollbarWidth: 'thin',
         scrollbarColor: `${base.palette.divider} transparent`,
