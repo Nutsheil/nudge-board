@@ -30,7 +30,7 @@ export const TECH_TAGS: { name: string; dot: string }[] = [
   { name: 'React', dot: '#61dafb' },
   { name: 'NestJS', dot: '#e0234e' },
   { name: 'PostgreSQL', dot: '#336791' },
-  { name: 'WebSockets', dot: '#a855f7' },
+  { name: 'WebSockets', dot: '#0d9488' },
   { name: 'PWA', dot: '#5bb974' },
 ]
 

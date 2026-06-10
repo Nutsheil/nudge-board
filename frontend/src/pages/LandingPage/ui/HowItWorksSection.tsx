@@ -15,16 +15,16 @@ const StepCard = ({ step }: { step: StepMeta }) => {
         flex: 1,
         width: '100%',
         bgcolor: (theme) => theme.palette.surface.cardDeep,
-        borderLeft: 3,
-        borderColor: 'primary.main',
+        border: 1,
+        borderColor: 'divider',
         borderRadius: 2,
         px: 4,
         py: 3,
         minHeight: 280,
       }}
     >
-      <Box sx={{ color: 'primary.main', opacity: 0.8 }}>{step.icon}</Box>
-      <Typography sx={{ color: 'primary.main', opacity: 0.35, fontWeight: 800, fontSize: 56, lineHeight: 1 }}>
+      <Box sx={{ color: 'primary.main' }}>{step.icon}</Box>
+      <Typography sx={{ color: 'text.disabled', fontWeight: 700, fontSize: 32, lineHeight: 1 }}>
         {step.num}
       </Typography>
       <Typography variant='h6'>{t(`landing.howItWorks.steps.${step.id}.title`)}</Typography>

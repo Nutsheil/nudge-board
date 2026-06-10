@@ -28,7 +28,7 @@ const Flashlight1 = styled(Box)(({ theme }) => ({
   height: 480,
   borderRadius: '50%',
   backgroundColor: theme.palette.primary.dark,
-  opacity: 0.18,
+  opacity: 0.1,
   filter: 'blur(80px)',
   pointerEvents: 'none',
 }))
@@ -41,7 +41,7 @@ const Flashlight2 = styled(Box)(({ theme }) => ({
   height: 380,
   borderRadius: '50%',
   backgroundColor: theme.palette.secondary.dark,
-  opacity: 0.22,
+  opacity: 0.16,
   filter: 'blur(64px)',
   pointerEvents: 'none',
 }))

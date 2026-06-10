@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next'
 
 import type { Workspace, WorkspaceRole } from '../model/types'
 
-const ROLE_COLOR: Record<WorkspaceRole, ChipProps['color']> = {
-  OWNER: 'primary',
-  ADMIN: 'secondary',
-  MEMBER: 'default',
+const ROLE_CHIP: Record<WorkspaceRole, ChipProps> = {
+  OWNER: { variant: 'filled', sx: { bgcolor: 'surface.pillHover', color: 'text.primary' } },
+  ADMIN: { variant: 'outlined', sx: { borderColor: 'divider', color: 'text.secondary' } },
+  MEMBER: { variant: 'outlined', sx: { borderColor: 'divider', color: 'text.secondary' } },
 }
 
 interface Props {
@@ -28,7 +28,7 @@ export const WorkspaceCard = ({ workspace, onClick }: Props) => {
             <Chip
               size='small'
               label={t(`workspace.role.${workspace.role.toLowerCase()}`)}
-              color={ROLE_COLOR[workspace.role]}
+              {...ROLE_CHIP[workspace.role]}
             />
           </Stack>
 
