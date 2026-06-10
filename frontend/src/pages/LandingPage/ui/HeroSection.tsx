@@ -1,4 +1,3 @@
-import Dashboard from '@mui/icons-material/Dashboard'
 import PlayArrow from '@mui/icons-material/PlayArrow'
 import { Button, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +6,7 @@ import { Link } from 'react-router'
 import { ROUTES } from '@/shared/config'
 import { BrowserMockup } from '@/shared/ui'
 
+import { BoardMockup } from './mockups'
 import { Section } from './Section'
 
 export const HeroSection = () => {
@@ -37,7 +37,9 @@ export const HeroSection = () => {
         </Stack>
       </Stack>
 
-      <BrowserMockup icon={<Dashboard />} label={t('landing.hero.mockupLabel')} />
+      <BrowserMockup label={t('landing.hero.mockupLabel')}>
+        <BoardMockup />
+      </BrowserMockup>
     </Section>
   )
 }

@@ -1,6 +1,8 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
+import { radii } from '@/shared/config/theme'
+
 import { STEPS, type StepMeta } from '../model/content'
 import { Section } from './Section'
 import { SectionHeading } from './SectionHeading'
@@ -17,16 +19,14 @@ const StepCard = ({ step }: { step: StepMeta }) => {
         bgcolor: (theme) => theme.palette.surface.cardDeep,
         border: 1,
         borderColor: 'divider',
-        borderRadius: 2,
+        borderRadius: `${radii.lg}px`,
         px: 4,
         py: 3,
         minHeight: 280,
       }}
     >
       <Box sx={{ color: 'primary.main' }}>{step.icon}</Box>
-      <Typography sx={{ color: 'text.disabled', fontWeight: 700, fontSize: 32, lineHeight: 1 }}>
-        {step.num}
-      </Typography>
+      <Typography sx={{ color: 'text.disabled', fontWeight: 700, fontSize: 32, lineHeight: 1 }}>{step.num}</Typography>
       <Typography variant='h6'>{t(`landing.howItWorks.steps.${step.id}.title`)}</Typography>
       <Typography variant='body2' sx={{ color: 'text.secondary' }}>
         {t(`landing.howItWorks.steps.${step.id}.description`)}

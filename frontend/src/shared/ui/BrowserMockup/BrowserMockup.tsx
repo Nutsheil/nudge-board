@@ -1,18 +1,20 @@
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import type { ReactNode } from 'react'
 
-import { fontFamilyMonospace } from '@/shared/config/theme'
+import { radii } from '@/shared/config/theme'
 
 const TRAFFIC_LIGHTS = ['#ff5f57', '#febc2e', '#28c840']
 
 type BrowserMockupProps = {
-  icon: ReactNode
-  label: string
+  children?: ReactNode
+  label?: string
   height?: number
 }
 
-export const BrowserMockup = ({ icon, label, height = 380 }: BrowserMockupProps) => (
+export const BrowserMockup = ({ children, label, height = 380 }: BrowserMockupProps) => (
   <Box
+    role='img'
+    aria-label={label}
     sx={{
       width: '100%',
       flex: 1,
@@ -20,7 +22,7 @@ export const BrowserMockup = ({ icon, label, height = 380 }: BrowserMockupProps)
       bgcolor: 'background.paper',
       border: 1,
       borderColor: 'divider',
-      borderRadius: 1.5,
+      borderRadius: `${radii.lg}px`,
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
@@ -36,25 +38,15 @@ export const BrowserMockup = ({ icon, label, height = 380 }: BrowserMockupProps)
         alignItems: 'center',
         borderBottom: 1,
         borderColor: 'divider',
+        flexShrink: 0,
       }}
     >
       {TRAFFIC_LIGHTS.map((color) => (
         <Box key={color} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: color, flexShrink: 0 }} />
       ))}
-      <Box sx={{ flex: 1, ml: 1, height: 22, borderRadius: 0.5, bgcolor: 'background.default' }} />
+      <Box sx={{ flex: 1, ml: 1, height: 22, borderRadius: `${radii.sm}px`, bgcolor: 'background.default' }} />
     </Stack>
 
-    <Stack spacing={1} sx={{ flex: 1, px: 2, alignItems: 'center', justifyContent: 'center' }}>
-      <Box sx={{ color: 'primary.main', opacity: 0.5, display: 'flex', '& svg': { fontSize: 36 } }}>{icon}</Box>
-      <Typography variant='body2' sx={{ color: (t) => t.palette.textExtra.tertiary, fontFamily: fontFamilyMonospace }}>
-        {label}
-      </Typography>
-      <Typography
-        variant='caption'
-        sx={{ color: (t) => t.palette.textExtra.quaternary, fontFamily: fontFamilyMonospace }}
-      >
-        [Visual placeholder]
-      </Typography>
-    </Stack>
+    <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>{children}</Box>
   </Box>
 )

@@ -1,13 +1,21 @@
 import { Stack, Typography } from '@mui/material'
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BrowserMockup } from '@/shared/ui'
 
 import { FEATURES, type FeatureMeta } from '../model/content'
+import { BoardMockup, OfflineMockup, TrackingMockup } from './mockups'
 import { Section } from './Section'
 import { SectionHeading } from './SectionHeading'
 
-const FeatureRow = ({ id, icon, reverse }: FeatureMeta) => {
+const SCREENS: Record<FeatureMeta['id'], ReactNode> = {
+  boards: <BoardMockup />,
+  tracking: <TrackingMockup />,
+  offline: <OfflineMockup />,
+}
+
+const FeatureRow = ({ id, reverse }: FeatureMeta) => {
   const { t } = useTranslation('landing')
 
   return (
@@ -26,7 +34,9 @@ const FeatureRow = ({ id, icon, reverse }: FeatureMeta) => {
         </Typography>
       </Stack>
 
-      <BrowserMockup icon={icon} label={t(`landing.features.${id}.mockupLabel`)} height={338} />
+      <BrowserMockup label={t(`landing.features.${id}.mockupLabel`)} height={338}>
+        {SCREENS[id]}
+      </BrowserMockup>
     </Stack>
   )
 }
