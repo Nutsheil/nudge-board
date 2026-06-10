@@ -36,9 +36,24 @@ export const createComponents = (base: Theme): ThemeOptions['components'] => ({
         style: {
           paddingInline: base.spacing(3.5),
           paddingBlock: base.spacing(1.75),
-          borderRadius: Number(base.shape.borderRadius) * 1.25,
+          borderRadius: base.radii.lg,
         },
       },
     ],
+  },
+  MuiPaper: {
+    styleOverrides: { root: { backgroundImage: 'none' } },
+  },
+  MuiCard: {
+    styleOverrides: { root: { borderRadius: base.radii.lg } },
+  },
+  MuiDialog: {
+    styleOverrides: { paper: { borderRadius: base.radii.lg } },
+  },
+  MuiMenu: {
+    styleOverrides: { paper: { borderRadius: base.radii.md } },
+  },
+  MuiPopover: {
+    styleOverrides: { paper: { borderRadius: base.radii.md } },
   },
 })

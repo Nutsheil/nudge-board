@@ -4,7 +4,7 @@ import { createTheme, type Theme } from '@mui/material/styles'
 import type { Language } from '../i18n'
 import { createComponents } from './components'
 import { palettes, type PaletteName } from './palettes'
-import { createResponsiveTypography, shape, spacing, typography } from './tokens'
+import { createResponsiveTypography, createShadows, radii, shape, spacing, transitions, typography } from './tokens'
 
 declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
@@ -23,6 +23,9 @@ export const createAppTheme = (paletteName: PaletteName, language: Language): Th
     typography,
     shape,
     spacing,
+    radii,
+    transitions,
+    shadows: createShadows(paletteName),
   })
 
   return createTheme(

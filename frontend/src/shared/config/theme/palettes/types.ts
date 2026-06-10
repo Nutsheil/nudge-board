@@ -21,4 +21,11 @@ declare module '@mui/material/styles' {
     surface?: Partial<Palette['surface']>
     textExtra?: Partial<Palette['textExtra']>
   }
+
+  interface Theme {
+    radii: { sm: number; md: number; lg: number; pill: number }
+  }
+  interface ThemeOptions {
+    radii?: { sm?: number; md?: number; lg?: number; pill?: number }
+  }
 }

@@ -3,6 +3,8 @@ import NorthEast from '@mui/icons-material/NorthEast'
 import { Box, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
+import { radii } from '@/shared/config/theme'
+
 import { SOURCE_REPO_URL, TECH_TAGS } from '../model/content'
 import { Section } from './Section'
 import { SectionHeading } from './SectionHeading'
@@ -22,7 +24,7 @@ export const StackSection = () => {
             spacing={1}
             sx={{
               bgcolor: (theme) => theme.palette.surface.pill,
-              borderRadius: 2,
+              borderRadius: `${radii.md}px`,
               px: 2.5,
               py: 1.25,
               alignItems: 'center',
@@ -45,7 +47,7 @@ export const StackSection = () => {
           bgcolor: (theme) => theme.palette.surface.pill,
           border: 1,
           borderColor: 'divider',
-          borderRadius: 1.5,
+          borderRadius: `${radii.md}px`,
           px: 2.5,
           py: 1.25,
           textDecoration: 'none',
