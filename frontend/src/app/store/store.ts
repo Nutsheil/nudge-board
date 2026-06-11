@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
-import { sessionApi, sessionReducer, SESSION_SLICE_KEY } from '@/entities/session'
+import { sessionApi, sessionListener, sessionReducer, SESSION_SLICE_KEY } from '@/entities/session'
 import { workspaceApi } from '@/entities/workspace'
 
 export const store = configureStore({
@@ -10,7 +10,8 @@ export const store = configureStore({
     [sessionApi.reducerPath]: sessionApi.reducer,
     [workspaceApi.reducerPath]: workspaceApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sessionApi.middleware, workspaceApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(sessionListener.middleware).concat(sessionApi.middleware, workspaceApi.middleware),
 })
 
 setupListeners(store.dispatch)
