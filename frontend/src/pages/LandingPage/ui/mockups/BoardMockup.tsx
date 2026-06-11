@@ -66,7 +66,14 @@ export const BoardMockup = () => (
       <Stack
         key={i}
         spacing={1}
-        sx={{ flex: 1, minWidth: 0, bgcolor: 'surface.cardDeep', borderRadius: `${radii.md}px`, p: 1 }}
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          bgcolor: 'surface.cardDeep',
+          borderRadius: `${radii.md}px`,
+          p: 1,
+          display: i === 2 ? { xs: 'none', sm: 'flex' } : 'flex',
+        }}
       >
         <Stack direction='row' spacing={0.75} sx={{ alignItems: 'center', px: 0.5, pb: 0.25 }}>
           <Box
