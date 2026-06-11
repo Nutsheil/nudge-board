@@ -61,7 +61,7 @@ export const LogoSection = () => {
       <Stack spacing={{ xs: 2, md: 3.5 }} sx={{ alignItems: 'center' }}>
         <Logo size='md' />
 
-        <Typography variant='subtitle1' sx={{ color: 'secondary.light' }}>
+        <Typography variant='subtitle1' component='p' sx={{ color: 'secondary.light' }}>
           {t('auth.logo.title')}
         </Typography>
 

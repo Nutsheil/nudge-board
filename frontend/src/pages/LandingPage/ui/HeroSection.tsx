@@ -23,7 +23,7 @@ export const HeroSection = () => {
       <Stack spacing={3.5} sx={{ width: '100%', flex: 1 }}>
         <Typography variant='h1'>{t('landing.hero.title')}</Typography>
 
-        <Typography variant='subtitle1' sx={{ color: 'text.secondary' }}>
+        <Typography variant='subtitle1' component='p' sx={{ color: 'text.secondary' }}>
           {t('landing.hero.description')}
         </Typography>
 

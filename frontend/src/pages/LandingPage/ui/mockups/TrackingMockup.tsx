@@ -28,7 +28,7 @@ export const TrackingMockup = () => (
     >
       <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
         <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main' }} />
-        <Typography variant='h5' sx={{ fontFamily: fontFamilyMonospace, color: 'text.primary' }}>
+        <Typography variant='h5' component='span' sx={{ fontFamily: fontFamilyMonospace, color: 'text.primary' }}>
           01:24:36
         </Typography>
       </Stack>

@@ -31,7 +31,9 @@ export const StackSection = () => {
             }}
           >
             <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: tag.dot }} />
-            <Typography variant='subtitle2'>{tag.name}</Typography>
+            <Typography variant='subtitle2' component='span'>
+              {tag.name}
+            </Typography>
           </Stack>
         ))}
       </Box>

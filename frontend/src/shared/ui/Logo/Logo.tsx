@@ -22,10 +22,6 @@ type Props = {
   variant?: LogoVariant
 }
 
-// "Nudge columns" mark: two graphite kanban columns plus a coral column nudged
-// up a step (board + nudge + the One Signal accent). Flat and theme-aware — the
-// graphite bars inherit currentColor (ink in light, white in dark), the accent
-// bar is Signal Coral. The rising heights + lifted coral bar read as forward motion.
 const Mark = ({ size }: { size: number }) => (
   <Box
     component='svg'
@@ -56,7 +52,9 @@ export const Logo = ({ size = 'md', variant = 'full' }: Props) => {
   return (
     <Stack direction='row' spacing={preset.gap} sx={{ alignItems: 'center' }}>
       {mark}
-      <Typography variant={preset.typography}>NudgeBoard</Typography>
+      <Typography variant={preset.typography} component='span'>
+        NudgeBoard
+      </Typography>
     </Stack>
   )
 }

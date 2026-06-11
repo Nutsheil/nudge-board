@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { ROUTES } from '@/shared/config'
+import { radii } from '@/shared/config/theme'
 
 import { Section } from './Section'
 
@@ -19,7 +20,7 @@ export const FinalCtaSection = () => {
             `linear-gradient(180deg, ${theme.palette.surface.ctaGradientTop} 0%, ${theme.palette.background.default} 100%)`,
           border: 1,
           borderColor: 'divider',
-          borderRadius: 3,
+          borderRadius: `${radii.lg}px`,
           alignItems: 'center',
           px: { xs: 4, md: 10 },
           py: { xs: 6, md: 10 },
@@ -27,7 +28,7 @@ export const FinalCtaSection = () => {
         }}
       >
         <Typography variant='h2'>{t('landing.finalCta.title')}</Typography>
-        <Typography variant='subtitle1' sx={{ color: 'text.secondary' }}>
+        <Typography variant='subtitle1' component='p' sx={{ color: 'text.secondary' }}>
           {t('landing.finalCta.subtitle')}
         </Typography>
         <Button
@@ -35,7 +36,7 @@ export const FinalCtaSection = () => {
           to={ROUTES.auth}
           variant='contained'
           endIcon={<ArrowForward />}
-          sx={{ borderRadius: 1.5, px: 4.5, py: 2 }}
+          sx={{ px: 4.5, py: 2 }}
         >
           {t('landing.finalCta.cta')}
         </Button>
