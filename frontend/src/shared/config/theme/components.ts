@@ -31,6 +31,17 @@ export const createComponents = (base: Theme): ThemeOptions['components'] => ({
   },
   MuiButton: {
     variants: [
+      ...(base.palette.mode === 'light'
+        ? [
+            {
+              props: { variant: 'contained' as const, color: 'primary' as const },
+              style: {
+                backgroundColor: base.palette.primary.dark,
+                '&:hover': { backgroundColor: '#b3300f' },
+              },
+            },
+          ]
+        : []),
       {
         props: { size: 'extraLarge' },
         style: {
