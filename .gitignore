@@ -38,3 +38,12 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Claude
+.claude/
+
+# Impeccable local tooling state (live config, regenerated design.json sidecar)
+.impeccable/
+
+# Personal docs / notes
+docs/
