@@ -17,6 +17,13 @@
     },
     "workspaceDescription": {
       "tooLong": "No more than 500 characters"
+    },
+    "boardName": {
+      "required": "Enter a board name",
+      "tooLong": "Name is too long"
+    },
+    "boardDescription": {
+      "tooLong": "Description is too long"
     }
   }
 }

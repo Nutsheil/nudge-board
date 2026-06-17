@@ -17,6 +17,13 @@
     },
     "workspaceDescription": {
       "tooLong": "Не более 500 символов"
+    },
+    "boardName": {
+      "required": "Введите название доски",
+      "tooLong": "Слишком длинное название"
+    },
+    "boardDescription": {
+      "tooLong": "Слишком длинное описание"
     }
   }
 }

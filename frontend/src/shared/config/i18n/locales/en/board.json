@@ -1,0 +1,41 @@
+{
+  "board": {
+    "list": {
+      "title": "Boards",
+      "subtitle": "Create boards to organize this workspace's tasks.",
+      "create": "Create board",
+      "retry": "Retry",
+      "loadError": "Failed to load boards.",
+      "empty": {
+        "title": "No boards yet",
+        "subtitle": "Create your first board to get started."
+      }
+    },
+    "card": {
+      "noDescription": "No description",
+      "menu": "Actions",
+      "rename": "Rename",
+      "delete": "Delete"
+    },
+    "create": {
+      "title": "New board",
+      "cancel": "Cancel",
+      "submit": "Create"
+    },
+    "rename": {
+      "title": "Rename board",
+      "cancel": "Cancel",
+      "submit": "Save"
+    },
+    "delete": {
+      "title": "Delete board?",
+      "body": "Board \"{{name}}\" and all its contents will be permanently deleted.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "field": {
+      "name": { "label": "Name", "placeholder": "e.g. Sprint 1" },
+      "description": { "label": "Description", "placeholder": "What this board is for (optional)" }
+    }
+  }
+}
