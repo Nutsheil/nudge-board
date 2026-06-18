@@ -29,7 +29,20 @@ export class BoardService {
   async getBoard(workspaceId: string, boardId: string): Promise<BoardTreeDto> {
     const board = await this.prisma.board.findFirst({
       where: { id: boardId, workspaceId },
-      include: { columns: { orderBy: { position: 'asc' }, select: { id: true, name: true, position: true } } },
+      include: {
+        columns: {
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            name: true,
+            position: true,
+            tasks: {
+              orderBy: { position: 'asc' },
+              select: { id: true, columnId: true, title: true, position: true },
+            },
+          },
+        },
+      },
     });
 
     if (!board) {

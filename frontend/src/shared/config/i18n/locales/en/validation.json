@@ -28,6 +28,10 @@
     "columnName": {
       "required": "Enter a column name",
       "tooLong": "Name is too long"
+    },
+    "taskTitle": {
+      "required": "Enter a task title",
+      "tooLong": "Title is too long"
     }
   }
 }

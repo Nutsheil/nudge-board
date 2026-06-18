@@ -6,7 +6,7 @@ export const DEFAULT_LANGUAGE: Language = 'ru'
 
 export const LANGUAGE_STORAGE_KEY = 'app-language'
 
-export const I18N_NAMESPACES = ['common', 'auth', 'workspace', 'board', 'column', 'landing', 'errors', 'validation'] as const
+export const I18N_NAMESPACES = ['common', 'auth', 'workspace', 'board', 'column', 'task', 'landing', 'errors', 'validation'] as const
 
 export type I18nNamespace = (typeof I18N_NAMESPACES)[number]
 

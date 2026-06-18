@@ -9,5 +9,5 @@ export {
 export type { CreateBoardPayload, DeleteBoardArgs, UpdateBoardPayload } from './api/boardApi'
 export { boardSchema } from './model/schema'
 export type { BoardFormValues } from './model/schema'
-export type { Board, BoardColumn, BoardTree } from './model/types'
+export type { Board, BoardColumn, BoardTask, BoardTree, ColumnEntity } from './model/types'
 export { BoardCard } from './ui/BoardCard'

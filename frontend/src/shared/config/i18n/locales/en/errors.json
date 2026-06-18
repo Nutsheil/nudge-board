@@ -25,6 +25,12 @@
       "updateFailed": "Failed to rename column. Please try again.",
       "deleteFailed": "Failed to delete column. Please try again.",
       "moveFailed": "Failed to move column. Please try again."
+    },
+    "task": {
+      "createFailed": "Failed to add task. Please try again.",
+      "updateFailed": "Failed to rename task. Please try again.",
+      "deleteFailed": "Failed to delete task. Please try again.",
+      "moveFailed": "Failed to move task. Please try again."
     }
   }
 }

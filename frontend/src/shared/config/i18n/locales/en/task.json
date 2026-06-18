@@ -1,0 +1,29 @@
+{
+  "task": {
+    "card": {
+      "menu": "Task actions",
+      "rename": "Rename",
+      "delete": "Delete"
+    },
+    "add": {
+      "trigger": "Add task",
+      "placeholder": "Task title",
+      "submit": "Add",
+      "cancel": "Cancel"
+    },
+    "rename": {
+      "title": "Rename task",
+      "cancel": "Cancel",
+      "submit": "Save"
+    },
+    "delete": {
+      "title": "Delete task?",
+      "body": "Task \"{{title}}\" will be permanently deleted.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "field": {
+      "title": { "label": "Title", "placeholder": "e.g. Write the spec" }
+    }
+  }
+}

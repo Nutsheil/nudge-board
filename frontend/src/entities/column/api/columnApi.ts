@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { boardApi, type BoardColumn } from '@/entities/board'
+import { boardApi, type ColumnEntity } from '@/entities/board'
 import { baseQueryWithReauth } from '@/entities/session'
 
 interface CreateColumnArgs {
@@ -34,7 +34,7 @@ export const columnApi = createApi({
   baseQuery: baseQueryWithReauth,
 
   endpoints: (builder) => ({
-    createColumn: builder.mutation<BoardColumn, CreateColumnArgs>({
+    createColumn: builder.mutation<ColumnEntity, CreateColumnArgs>({
       query: ({ workspaceId, boardId, name }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/columns`,
         method: 'POST',
@@ -46,7 +46,7 @@ export const columnApi = createApi({
           const { data } = await queryFulfilled
           dispatch(
             boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
-              draft.columns.push(data)
+              draft.columns.push({ ...data, tasks: [] })
               draft.columns.sort((a, b) => a.position - b.position)
             }),
           )
@@ -56,7 +56,7 @@ export const columnApi = createApi({
       },
     }),
 
-    updateColumn: builder.mutation<BoardColumn, UpdateColumnArgs>({
+    updateColumn: builder.mutation<ColumnEntity, UpdateColumnArgs>({
       query: ({ workspaceId, boardId, columnId, name }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/columns/${columnId}`,
         method: 'PATCH',
@@ -96,7 +96,7 @@ export const columnApi = createApi({
       },
     }),
 
-    moveColumn: builder.mutation<BoardColumn, MoveColumnArgs>({
+    moveColumn: builder.mutation<ColumnEntity, MoveColumnArgs>({
       query: ({ workspaceId, boardId, columnId, afterId }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/columns/${columnId}/move`,
         method: 'PATCH',

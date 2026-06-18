@@ -1,4 +1,5 @@
-import { useSortable } from '@dnd-kit/sortable'
+import { useDroppable } from '@dnd-kit/core'
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -6,22 +7,37 @@ import { Box, IconButton, Menu, MenuItem, Paper, Stack, Typography } from '@mui/
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { BoardColumn } from '@/entities/board'
+import { CreateTaskInline } from '@/features/task-create'
+import type { BoardColumn, BoardTask } from '@/entities/board'
+
+import { TaskCard } from './TaskCard'
 
 interface Props {
+  workspaceId: string
+  boardId: string
   column: BoardColumn
   onRename: () => void
   onDelete: () => void
+  onRenameTask: (task: BoardTask) => void
+  onDeleteTask: (task: BoardTask) => void
 }
 
-export const Column = ({ column, onRename, onDelete }: Props) => {
+export const Column = ({ workspaceId, boardId, column, onRename, onDelete, onRenameTask, onDeleteTask }: Props) => {
   const { t } = useTranslation('column')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const close = () => setAnchorEl(null)
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: column.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: column.id,
+    data: { type: 'column' },
+  })
   const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
+
+  const { setNodeRef: setTaskDropRef } = useDroppable({
+    id: `tasks:${column.id}`,
+    data: { type: 'column-drop', columnId: column.id },
+  })
 
   return (
     <Paper ref={setNodeRef} style={style} variant='outlined' sx={{ width: 288, flexShrink: 0, p: 1.5, bgcolor: 'surface.cardDeep' }}>
@@ -65,8 +81,32 @@ export const Column = ({ column, onRename, onDelete }: Props) => {
           {t('column.card.delete')}
         </MenuItem>
       </Menu>
-      {/* Task cards arrive in Slice 3 */}
-      <Box sx={{ minHeight: 120 }} />
+      <Box ref={setTaskDropRef} sx={{ minHeight: 8 }}>
+        <SortableContext
+          items={column.tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <Stack spacing={1}>
+            {column.tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onRename={() => onRenameTask(task)}
+                onDelete={() => onDeleteTask(task)}
+              />
+            ))}
+          </Stack>
+        </SortableContext>
+        {column.tasks.length === 0 && (
+          <Box
+            aria-hidden
+            sx={{ minHeight: 52, borderRadius: 1, border: '1px dashed', borderColor: 'divider' }}
+          />
+        )}
+      </Box>
+      <Box sx={{ mt: 1 }}>
+        <CreateTaskInline workspaceId={workspaceId} boardId={boardId} columnId={column.id} />
+      </Box>
     </Paper>
   )
 }

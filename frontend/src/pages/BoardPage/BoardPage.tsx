@@ -1,4 +1,4 @@
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { closestCorners, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, horizontalListSortingStrategy, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -11,8 +11,11 @@ import { useNavigate, useParams } from 'react-router'
 import { CreateColumnInline } from '@/features/column-create'
 import { DeleteColumnDialog } from '@/features/column-delete'
 import { RenameColumnDialog } from '@/features/column-edit'
-import { type BoardColumn, useGetBoardQuery } from '@/entities/board'
+import { DeleteTaskDialog } from '@/features/task-delete'
+import { RenameTaskDialog } from '@/features/task-edit'
+import { type BoardColumn, type BoardTask, useGetBoardQuery } from '@/entities/board'
 import { useMoveColumnMutation } from '@/entities/column'
+import { useMoveTaskMutation } from '@/entities/task'
 import { getErrorKey } from '@/shared/api/errors'
 import { ROUTES } from '@/shared/config'
 
@@ -26,21 +29,27 @@ const BoardPage = () => {
 
   const [renameTarget, setRenameTarget] = useState<BoardColumn | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<BoardColumn | null>(null)
+  const [renameTaskTarget, setRenameTaskTarget] = useState<BoardTask | null>(null)
+  const [deleteTaskTarget, setDeleteTaskTarget] = useState<BoardTask | null>(null)
 
   const [moveColumn] = useMoveColumnMutation()
+  const [moveTask] = useMoveTaskMutation()
   const { enqueueSnackbar } = useSnackbar()
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event
-    if (!over || active.id === over.id || !board) return
+  const handleColumnDragEnd = async (active: DragEndEvent['active'], over: DragEndEvent['over']) => {
+    if (!over || !board) return
+    const overData = over.data.current
+    const overColumnId =
+      overData?.type === 'column' ? (over.id as string) : (overData?.columnId as string | undefined)
+    if (!overColumnId || active.id === overColumnId) return
 
     const ids = board.columns.map((c) => c.id)
     const oldIndex = ids.indexOf(active.id as string)
-    const newIndex = ids.indexOf(over.id as string)
+    const newIndex = ids.indexOf(overColumnId)
     if (oldIndex === -1 || newIndex === -1) return
 
     const reordered = arrayMove(ids, oldIndex, newIndex)
@@ -54,20 +63,89 @@ const BoardPage = () => {
     }
   }
 
+  const handleTaskDragEnd = async (active: DragEndEvent['active'], over: DragEndEvent['over']) => {
+    if (!over || !board) return
+    const activeId = active.id as string
+    const sourceColumnId = active.data.current?.columnId as string | undefined
+    const overData = over.data.current
+
+    // Resolve the target column and (optionally) the task we dropped onto.
+    let targetColumnId: string | undefined
+    let overTaskId: string | null = null
+    if (overData?.type === 'task') {
+      targetColumnId = overData.columnId as string
+      overTaskId = over.id as string
+    } else if (overData?.type === 'column') {
+      targetColumnId = over.id as string
+    } else if (overData?.type === 'column-drop') {
+      targetColumnId = overData.columnId as string
+    }
+    if (!targetColumnId) return
+
+    const targetColumn = board.columns.find((c) => c.id === targetColumnId)
+    if (!targetColumn) return
+
+    const targetIds = targetColumn.tasks.map((t) => t.id)
+
+    let newOrder: string[]
+    if (targetColumnId === sourceColumnId) {
+      // Same column: reorder with arrayMove so a downward drop lands after the
+      // over-task and an upward drop lands before it (directional, like columns).
+      const oldIndex = targetIds.indexOf(activeId)
+      const newIndex = overTaskId === null ? targetIds.length - 1 : targetIds.indexOf(overTaskId)
+      if (oldIndex === -1 || newIndex === -1) return
+      newOrder = arrayMove(targetIds, oldIndex, newIndex)
+    } else {
+      // Cross column: insert before the over-task, or append on a column drop.
+      const insertIndex = overTaskId === null ? targetIds.length : Math.max(0, targetIds.indexOf(overTaskId))
+      newOrder = [...targetIds.slice(0, insertIndex), activeId, ...targetIds.slice(insertIndex)]
+    }
+
+    const movedAt = newOrder.indexOf(activeId)
+    const afterId = movedAt <= 0 ? null : newOrder[movedAt - 1]
+
+    // No-op: same column and the task already sits after the same anchor.
+    if (targetColumnId === sourceColumnId) {
+      const currentIndex = targetIds.indexOf(activeId)
+      const currentAfterId = currentIndex <= 0 ? null : targetIds[currentIndex - 1]
+      if (currentAfterId === afterId) return
+    }
+
+    try {
+      await moveTask({ workspaceId, boardId, taskId: activeId, targetColumnId, afterId }).unwrap()
+    } catch (err) {
+      enqueueSnackbar(t(getErrorKey(err, { fallback: 'errors.task.moveFailed' })), { variant: 'error' })
+    }
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    const type = active.data.current?.type
+    if (type === 'column') {
+      void handleColumnDragEnd(active, over)
+    } else if (type === 'task') {
+      void handleTaskDragEnd(active, over)
+    }
+  }
+
   const renderContent = () => {
     if (isLoading) return <ColumnsSkeleton />
     if (isError || !board) return <BoardError onRetryClick={() => refetch()} />
 
     return (
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
         <SortableContext items={board.columns.map((c) => c.id)} strategy={horizontalListSortingStrategy}>
           <Stack direction='row' spacing={2} sx={{ overflowX: 'auto', alignItems: 'flex-start', pb: 2 }}>
             {board.columns.map((column) => (
               <Column
                 key={column.id}
+                workspaceId={workspaceId}
+                boardId={boardId}
                 column={column}
                 onRename={() => setRenameTarget(column)}
                 onDelete={() => setDeleteTarget(column)}
+                onRenameTask={setRenameTaskTarget}
+                onDeleteTask={setDeleteTaskTarget}
               />
             ))}
             <CreateColumnInline workspaceId={workspaceId} boardId={boardId} />
@@ -104,6 +182,18 @@ const BoardPage = () => {
         boardId={boardId}
         column={deleteTarget}
         onClose={() => setDeleteTarget(null)}
+      />
+      <RenameTaskDialog
+        workspaceId={workspaceId}
+        boardId={boardId}
+        task={renameTaskTarget}
+        onClose={() => setRenameTaskTarget(null)}
+      />
+      <DeleteTaskDialog
+        workspaceId={workspaceId}
+        boardId={boardId}
+        task={deleteTaskTarget}
+        onClose={() => setDeleteTaskTarget(null)}
       />
     </Container>
   )

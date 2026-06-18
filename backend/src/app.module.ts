@@ -6,6 +6,7 @@ import { BoardModule } from './board/board.module';
 import { ColumnModule } from './column/column.module';
 import { validateEnv } from './config/env.schema';
 import { PrismaModule } from './prisma/prisma.module';
+import { TaskModule } from './task/task.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
     WorkspaceModule,
     BoardModule,
     ColumnModule,
+    TaskModule,
   ],
 })
 export class AppModule {}

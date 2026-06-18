@@ -46,25 +46,52 @@ describe('BoardService', () => {
     expect(result).toBe(created);
   });
 
-  it('returns the board tree with sorted columns', async () => {
+  it('returns the board tree with columns and their tasks', async () => {
     board.findFirst.mockResolvedValue({
       id: 'b1',
       name: 'A',
       description: null,
-      columns: [{ id: 'c1', name: 'To Do', position: 1 }],
+      columns: [
+        {
+          id: 'c1',
+          name: 'To Do',
+          position: 1,
+          tasks: [{ id: 't1', columnId: 'c1', title: 'First', position: 1 }],
+        },
+      ],
     });
 
     const result = await service.getBoard('w1', 'b1');
 
     expect(board.findFirst).toHaveBeenCalledWith({
       where: { id: 'b1', workspaceId: 'w1' },
-      include: { columns: { orderBy: { position: 'asc' }, select: { id: true, name: true, position: true } } },
+      include: {
+        columns: {
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            name: true,
+            position: true,
+            tasks: {
+              orderBy: { position: 'asc' },
+              select: { id: true, columnId: true, title: true, position: true },
+            },
+          },
+        },
+      },
     });
     expect(result).toEqual({
       id: 'b1',
       name: 'A',
       description: null,
-      columns: [{ id: 'c1', name: 'To Do', position: 1 }],
+      columns: [
+        {
+          id: 'c1',
+          name: 'To Do',
+          position: 1,
+          tasks: [{ id: 't1', columnId: 'c1', title: 'First', position: 1 }],
+        },
+      ],
     });
   });
 

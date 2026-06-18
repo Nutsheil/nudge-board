@@ -5,10 +5,18 @@ export interface BoardSummaryDto {
   createdAt: Date;
 }
 
+export interface BoardTaskDto {
+  id: string;
+  columnId: string;
+  title: string;
+  position: number;
+}
+
 export interface BoardColumnDto {
   id: string;
   name: string;
   position: number;
+  tasks: BoardTaskDto[];
 }
 
 export interface BoardTreeDto {
