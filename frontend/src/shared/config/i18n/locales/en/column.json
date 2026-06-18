@@ -1,0 +1,39 @@
+{
+  "column": {
+    "board": {
+      "back": "Back to boards",
+      "loadError": "Failed to load this board.",
+      "retry": "Retry",
+      "empty": {
+        "title": "No columns yet",
+        "subtitle": "Add your first column to start organizing tasks."
+      }
+    },
+    "add": {
+      "trigger": "Add column",
+      "placeholder": "Column name",
+      "submit": "Add",
+      "cancel": "Cancel"
+    },
+    "card": {
+      "menu": "Column actions",
+      "dragHandle": "Reorder column",
+      "rename": "Rename",
+      "delete": "Delete"
+    },
+    "rename": {
+      "title": "Rename column",
+      "cancel": "Cancel",
+      "submit": "Save"
+    },
+    "delete": {
+      "title": "Delete column?",
+      "body": "Column \"{{name}}\" and all its tasks will be permanently deleted.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "field": {
+      "name": { "label": "Name", "placeholder": "e.g. To Do" }
+    }
+  }
+}

@@ -1,17 +1,19 @@
 import { Container, Grid, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { CreateBoardDialog } from '@/features/board-create'
 import { DeleteBoardDialog } from '@/features/board-delete'
 import { RenameBoardDialog } from '@/features/board-edit'
 import { type Board, BoardCard, useGetBoardsQuery } from '@/entities/board'
+import { ROUTES } from '@/shared/config'
 
 import { BoardGridSkeleton, BoardsError, CreateBoardCard, NoBoards } from './ui'
 
 const WorkspacePage = () => {
   const { workspaceId = '' } = useParams<{ workspaceId: string }>()
+  const navigate = useNavigate()
   const { t } = useTranslation('board')
   const { data: boards, isLoading, isError, refetch } = useGetBoardsQuery(workspaceId)
 
@@ -31,7 +33,12 @@ const WorkspacePage = () => {
         </Grid>
         {boards.map((board) => (
           <Grid key={board.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <BoardCard board={board} onRename={() => setRenameTarget(board)} onDelete={() => setDeleteTarget(board)} />
+            <BoardCard
+              board={board}
+              onOpen={() => navigate(ROUTES.board(workspaceId, board.id))}
+              onRename={() => setRenameTarget(board)}
+              onDelete={() => setDeleteTarget(board)}
+            />
           </Grid>
         ))}
       </Grid>

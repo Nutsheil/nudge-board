@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { baseQueryWithReauth } from '@/entities/session'
 
-import type { Board } from '../model/types'
+import type { Board, BoardTree } from '../model/types'
 
 export interface CreateBoardPayload {
   workspaceId: string
@@ -36,6 +36,14 @@ export const boardApi = createApi({
           : [{ type: 'Boards' as const, id: 'LIST' }],
     }),
 
+    getBoard: builder.query<BoardTree, { workspaceId: string; boardId: string }>({
+      query: ({ workspaceId, boardId }) => ({
+        url: `workspaces/${workspaceId}/boards/${boardId}`,
+        method: 'GET',
+      }),
+      providesTags: (_result, _error, { boardId }) => [{ type: 'Boards', id: boardId }],
+    }),
+
     createBoard: builder.mutation<Board, CreateBoardPayload>({
       query: ({ workspaceId, ...body }) => ({ url: `workspaces/${workspaceId}/boards`, method: 'POST', body }),
       invalidatesTags: [{ type: 'Boards', id: 'LIST' }],
@@ -63,4 +71,10 @@ export const boardApi = createApi({
   }),
 })
 
-export const { useGetBoardsQuery, useCreateBoardMutation, useUpdateBoardMutation, useDeleteBoardMutation } = boardApi
+export const {
+  useGetBoardsQuery,
+  useGetBoardQuery,
+  useCreateBoardMutation,
+  useUpdateBoardMutation,
+  useDeleteBoardMutation,
+} = boardApi

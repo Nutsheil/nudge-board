@@ -24,6 +24,10 @@
     },
     "boardDescription": {
       "tooLong": "Description is too long"
+    },
+    "columnName": {
+      "required": "Enter a column name",
+      "tooLong": "Name is too long"
     }
   }
 }

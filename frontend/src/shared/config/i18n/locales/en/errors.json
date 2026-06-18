@@ -19,6 +19,12 @@
       "createFailed": "Failed to create board. Please try again.",
       "updateFailed": "Failed to rename board. Please try again.",
       "deleteFailed": "Failed to delete board. Please try again."
+    },
+    "column": {
+      "createFailed": "Failed to add column. Please try again.",
+      "updateFailed": "Failed to rename column. Please try again.",
+      "deleteFailed": "Failed to delete column. Please try again.",
+      "moveFailed": "Failed to move column. Please try again."
     }
   }
 }

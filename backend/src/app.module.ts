@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
+import { ColumnModule } from './column/column.module';
 import { validateEnv } from './config/env.schema';
 import { PrismaModule } from './prisma/prisma.module';
 import { WorkspaceModule } from './workspace/workspace.module';
@@ -14,6 +15,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
     AuthModule,
     WorkspaceModule,
     BoardModule,
+    ColumnModule,
   ],
 })
 export class AppModule {}
