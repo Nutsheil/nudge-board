@@ -30,7 +30,9 @@
       "createFailed": "Failed to add task. Please try again.",
       "updateFailed": "Failed to rename task. Please try again.",
       "deleteFailed": "Failed to delete task. Please try again.",
-      "moveFailed": "Failed to move task. Please try again."
+      "moveFailed": "Failed to move task. Please try again.",
+      "loadFailed": "Could not load the task. Please try again.",
+      "assigneesFailed": "Could not update assignees. Please try again."
     }
   }
 }

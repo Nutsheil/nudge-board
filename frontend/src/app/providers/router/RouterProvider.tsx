@@ -4,6 +4,7 @@ import { AppLayout, AuthLayout, PublicLayout } from '@/app/layouts'
 import { AuthPage } from '@/pages/AuthPage'
 import { BoardPage } from '@/pages/BoardPage'
 import { LandingPage } from '@/pages/LandingPage'
+import { TaskPage } from '@/pages/TaskPage'
 import { WorkspacePage } from '@/pages/WorkspacePage'
 import { WorkspaceSelectionPage } from '@/pages/WorkspaceSelectionPage'
 import { ROUTES } from '@/shared/config'
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
           { path: ROUTES.app, element: <WorkspaceSelectionPage /> },
           { path: ROUTES.workspacePattern, element: <WorkspacePage /> },
           { path: ROUTES.boardPattern, element: <BoardPage /> },
+          { path: ROUTES.taskPattern, element: <TaskPage /> },
         ],
       },
     ],

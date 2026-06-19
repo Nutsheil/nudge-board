@@ -23,7 +23,32 @@
       "confirm": "Удалить"
     },
     "field": {
-      "title": { "label": "Название", "placeholder": "Например, Написать спецификацию" }
+      "title": { "label": "Название", "placeholder": "Например, Написать спецификацию" },
+      "description": { "label": "Описание", "placeholder": "Добавьте детали задачи" },
+      "priority": { "label": "Приоритет" },
+      "dueDate": { "label": "Срок" },
+      "timeEstimate": { "label": "Оценка (мин)" },
+      "timeSpent": { "label": "Затрачено (мин)" }
+    },
+    "page": {
+      "back": "К доске",
+      "notFound": "Задача не найдена",
+      "retry": "Повторить",
+      "edit": "Редактировать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "empty": "—"
+    },
+    "priority": {
+      "LOW": "Низкий",
+      "MEDIUM": "Средний",
+      "HIGH": "Высокий",
+      "URGENT": "Срочный"
+    },
+    "assignees": {
+      "label": "Исполнители",
+      "placeholder": "Выберите исполнителей",
+      "empty": "Нет исполнителей"
     }
   }
 }

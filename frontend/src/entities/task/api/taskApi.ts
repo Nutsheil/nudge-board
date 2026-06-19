@@ -1,7 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { boardApi, type BoardTask } from '@/entities/board'
+import { boardApi, type BoardTask, type Priority } from '@/entities/board'
+import type { Member } from '@/entities/member'
 import { baseQueryWithReauth } from '@/entities/session'
+
+import type { TaskDetail, TaskDetailAssignee } from '../model/types'
 
 interface CreateTaskArgs {
   workspaceId: string
@@ -10,11 +13,20 @@ interface CreateTaskArgs {
   title: string
 }
 
+export interface TaskPatch {
+  title?: string
+  description?: string | null
+  priority?: Priority
+  timeEstimate?: number | null
+  timeSpent?: number
+  dueDate?: string | null
+}
+
 interface UpdateTaskArgs {
   workspaceId: string
   boardId: string
   taskId: string
-  title: string
+  patch: TaskPatch
 }
 
 interface DeleteTaskArgs {
@@ -36,7 +48,14 @@ export const taskApi = createApi({
   baseQuery: baseQueryWithReauth,
 
   endpoints: (builder) => ({
-    createTask: builder.mutation<BoardTask, CreateTaskArgs>({
+    getTask: builder.query<TaskDetail, { workspaceId: string; boardId: string; taskId: string }>({
+      query: ({ workspaceId, boardId, taskId }) => ({
+        url: `workspaces/${workspaceId}/boards/${boardId}/tasks/${taskId}`,
+        method: 'GET',
+      }),
+    }),
+
+    createTask: builder.mutation<Omit<BoardTask, 'assignees'>, CreateTaskArgs>({
       query: ({ workspaceId, boardId, columnId, title }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/columns/${columnId}/tasks`,
         method: 'POST',
@@ -50,7 +69,7 @@ export const taskApi = createApi({
             boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
               const col = draft.columns.find((c) => c.id === columnId)
               if (!col) return
-              col.tasks.push(data)
+              col.tasks.push({ ...data, assignees: [] })
               col.tasks.sort((a, b) => a.position - b.position)
             }),
           )
@@ -60,28 +79,91 @@ export const taskApi = createApi({
       },
     }),
 
-    updateTask: builder.mutation<BoardTask, UpdateTaskArgs>({
-      query: ({ workspaceId, boardId, taskId, title }) => ({
+    updateTask: builder.mutation<TaskDetail, UpdateTaskArgs>({
+      query: ({ workspaceId, boardId, taskId, patch }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/tasks/${taskId}`,
         method: 'PATCH',
-        body: { title },
+        body: patch,
       }),
-      async onQueryStarted({ workspaceId, boardId, taskId, title }, { dispatch, queryFulfilled }) {
-        const patch = dispatch(
+      async onQueryStarted({ workspaceId, boardId, taskId, patch }, { dispatch, queryFulfilled }) {
+        // Patch the task-detail cache (every field the page shows).
+        const detailPatch = dispatch(
+          taskApi.util.updateQueryData('getTask', { workspaceId, boardId, taskId }, (draft) => {
+            Object.assign(draft, patch)
+          }),
+        )
+        // Patch the board card cache (only the card-visible fields).
+        const boardPatch = dispatch(
           boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
             for (const col of draft.columns) {
               const task = col.tasks.find((t) => t.id === taskId)
-              if (task) {
-                task.title = title
-                break
-              }
+              if (!task) continue
+              if (patch.title !== undefined) task.title = patch.title
+              if (patch.priority !== undefined) task.priority = patch.priority
+              if (patch.dueDate !== undefined) task.dueDate = patch.dueDate
+              break
             }
           }),
         )
         try {
           await queryFulfilled
         } catch {
-          patch.undo()
+          detailPatch.undo()
+          boardPatch.undo()
+        }
+      },
+    }),
+
+    setAssignees: builder.mutation<
+      TaskDetailAssignee[],
+      { workspaceId: string; boardId: string; taskId: string; userIds: string[]; members: Member[] }
+    >({
+      query: ({ workspaceId, boardId, taskId, userIds }) => ({
+        url: `workspaces/${workspaceId}/boards/${boardId}/tasks/${taskId}/assignees`,
+        method: 'PUT',
+        body: { userIds },
+      }),
+      async onQueryStarted(
+        { workspaceId, boardId, taskId, userIds, members },
+        { dispatch, queryFulfilled },
+      ) {
+        const selected = members.filter((m) => userIds.includes(m.id))
+        const detailPatch = dispatch(
+          taskApi.util.updateQueryData('getTask', { workspaceId, boardId, taskId }, (draft) => {
+            draft.assignees = selected.map((m) => ({ id: m.id, name: m.name, email: m.email }))
+          }),
+        )
+        const boardPatch = dispatch(
+          boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
+            for (const col of draft.columns) {
+              const task = col.tasks.find((t) => t.id === taskId)
+              if (!task) continue
+              task.assignees = selected.map((m) => ({ id: m.id, name: m.name }))
+              break
+            }
+          }),
+        )
+        try {
+          const { data } = await queryFulfilled
+          // Reconcile with the server's canonical order.
+          dispatch(
+            taskApi.util.updateQueryData('getTask', { workspaceId, boardId, taskId }, (draft) => {
+              draft.assignees = data
+            }),
+          )
+          dispatch(
+            boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
+              for (const col of draft.columns) {
+                const task = col.tasks.find((t) => t.id === taskId)
+                if (!task) continue
+                task.assignees = data.map((a) => ({ id: a.id, name: a.name }))
+                break
+              }
+            }),
+          )
+        } catch {
+          detailPatch.undo()
+          boardPatch.undo()
         }
       },
     }),
@@ -158,8 +240,10 @@ export const taskApi = createApi({
 })
 
 export const {
+  useGetTaskQuery,
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useMoveTaskMutation,
+  useSetAssigneesMutation,
 } = taskApi

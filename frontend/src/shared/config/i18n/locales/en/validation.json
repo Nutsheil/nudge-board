@@ -32,6 +32,12 @@
     "taskTitle": {
       "required": "Enter a task title",
       "tooLong": "Title is too long"
+    },
+    "taskDescription": {
+      "tooLong": "Description is too long"
+    },
+    "taskTime": {
+      "invalid": "Enter a non-negative whole number"
     }
   }
 }

@@ -24,7 +24,7 @@ export const RenameTaskDialog = ({ workspaceId, boardId, task, onClose }: Props)
   const handleSubmit = async (values: TaskFormValues) => {
     if (!task) return
     try {
-      await updateTask({ workspaceId, boardId, taskId: task.id, title: values.title }).unwrap()
+      await updateTask({ workspaceId, boardId, taskId: task.id, patch: { title: values.title } }).unwrap()
       onClose()
     } catch (err) {
       enqueueSnackbar(t(getErrorKey(err, { fallback: 'errors.task.updateFailed' })), { variant: 'error' })

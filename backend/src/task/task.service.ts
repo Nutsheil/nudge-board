@@ -1,19 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import type { Priority } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateTaskDto } from './dto/create-task.dto';
 import type { MoveTaskDto } from './dto/move-task.dto';
+import type { SetAssigneesDto } from './dto/set-assignees.dto';
 import type { TaskDto } from './dto/task.dto';
+import type { AssigneeDto, TaskDetailDto } from './dto/task-detail.dto';
 import type { UpdateTaskDto } from './dto/update-task.dto';
 
 const TASK_SELECT = { id: true, columnId: true, title: true, position: true } as const;
+const CARD_SELECT = { id: true, columnId: true, title: true, position: true, priority: true, dueDate: true } as const;
 const POSITION_EPSILON = 1e-6;
+
+const DETAIL_SELECT = {
+  id: true,
+  columnId: true,
+  title: true,
+  description: true,
+  position: true,
+  priority: true,
+  timeEstimate: true,
+  timeSpent: true,
+  dueDate: true,
+  assignees: { select: { user: { select: { id: true, name: true, email: true } } } },
+} as const;
+
+type DetailRow = {
+  id: string;
+  columnId: string;
+  title: string;
+  description: string | null;
+  position: number;
+  priority: Priority;
+  timeEstimate: number | null;
+  timeSpent: number;
+  dueDate: Date | null;
+  assignees: { user: AssigneeDto }[];
+};
 
 @Injectable()
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(workspaceId: string, boardId: string, columnId: string, dto: CreateTaskDto): Promise<TaskDto> {
+  async create(
+    workspaceId: string,
+    boardId: string,
+    columnId: string,
+    dto: CreateTaskDto,
+  ): Promise<{ id: string; columnId: string; title: string; position: number; priority: Priority; dueDate: Date | null }> {
     await this.assertColumnInBoard(workspaceId, boardId, columnId);
 
     const last = await this.prisma.task.findFirst({
@@ -25,18 +60,86 @@ export class TaskService {
 
     return this.prisma.task.create({
       data: { columnId, title: dto.title, position },
-      select: TASK_SELECT,
+      select: CARD_SELECT,
     });
   }
 
-  async update(workspaceId: string, boardId: string, taskId: string, dto: UpdateTaskDto): Promise<TaskDto> {
+  async update(workspaceId: string, boardId: string, taskId: string, dto: UpdateTaskDto): Promise<TaskDetailDto> {
     await this.assertTaskInBoard(workspaceId, boardId, taskId);
 
-    return this.prisma.task.update({
+    const data: Record<string, unknown> = {};
+    if (dto.title !== undefined) data.title = dto.title;
+    if (dto.description !== undefined) data.description = dto.description;
+    if (dto.priority !== undefined) data.priority = dto.priority;
+    if (dto.timeEstimate !== undefined) data.timeEstimate = dto.timeEstimate;
+    if (dto.timeSpent !== undefined) data.timeSpent = dto.timeSpent;
+    if (dto.dueDate !== undefined) data.dueDate = dto.dueDate === null ? null : new Date(dto.dueDate);
+
+    const row = (await this.prisma.task.update({
       where: { id: taskId },
-      data: { title: dto.title },
-      select: TASK_SELECT,
+      data,
+      select: DETAIL_SELECT,
+    })) as unknown as DetailRow;
+
+    return this.toDetail(row);
+  }
+
+  private toDetail(row: DetailRow): TaskDetailDto {
+    return {
+      id: row.id,
+      columnId: row.columnId,
+      title: row.title,
+      description: row.description,
+      position: row.position,
+      priority: row.priority,
+      timeEstimate: row.timeEstimate,
+      timeSpent: row.timeSpent,
+      dueDate: row.dueDate,
+      assignees: row.assignees.map((a) => a.user),
+    };
+  }
+
+  async getTask(workspaceId: string, boardId: string, taskId: string): Promise<TaskDetailDto> {
+    await this.assertTaskInBoard(workspaceId, boardId, taskId);
+
+    const row = (await this.prisma.task.findFirst({
+      where: { id: taskId },
+      select: DETAIL_SELECT,
+    })) as DetailRow;
+
+    return this.toDetail(row);
+  }
+
+  async setAssignees(
+    workspaceId: string,
+    boardId: string,
+    taskId: string,
+    dto: SetAssigneesDto,
+  ): Promise<AssigneeDto[]> {
+    await this.assertTaskInBoard(workspaceId, boardId, taskId);
+
+    const userIds = [...new Set(dto.userIds)];
+    if (userIds.length > 0) {
+      const members = await this.prisma.workspaceMember.findMany({
+        where: { workspaceId, userId: { in: userIds } },
+        select: { userId: true },
+      });
+      if (members.length !== userIds.length) {
+        throw new NotFoundException('Member not found');
+      }
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.taskAssignee.deleteMany({ where: { taskId } }),
+      this.prisma.taskAssignee.createMany({ data: userIds.map((userId) => ({ taskId, userId })) }),
+    ]);
+
+    const rows = await this.prisma.taskAssignee.findMany({
+      where: { taskId },
+      select: { user: { select: { id: true, name: true, email: true } } },
+      orderBy: { assignedAt: 'asc' },
     });
+    return rows.map((r) => r.user);
   }
 
   async remove(workspaceId: string, boardId: string, taskId: string): Promise<void> {

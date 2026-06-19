@@ -1,3 +1,10 @@
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
+
+export interface TaskAssigneeView {
+  id: string
+  name: string
+}
+
 export interface Board {
   id: string
   name: string
@@ -10,6 +17,9 @@ export interface BoardTask {
   columnId: string
   title: string
   position: number
+  priority: Priority
+  dueDate: string | null
+  assignees: TaskAssigneeView[]
 }
 
 export interface BoardColumn {

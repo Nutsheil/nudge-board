@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
 import { ColumnModule } from './column/column.module';
 import { validateEnv } from './config/env.schema';
+import { MemberModule } from './member/member.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TaskModule } from './task/task.module';
 import { WorkspaceModule } from './workspace/workspace.module';
@@ -18,6 +19,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
     BoardModule,
     ColumnModule,
     TaskModule,
+    MemberModule,
   ],
 })
 export class AppModule {}

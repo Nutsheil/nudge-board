@@ -23,7 +23,32 @@
       "confirm": "Delete"
     },
     "field": {
-      "title": { "label": "Title", "placeholder": "e.g. Write the spec" }
+      "title": { "label": "Title", "placeholder": "e.g. Write the spec" },
+      "description": { "label": "Description", "placeholder": "Add task details" },
+      "priority": { "label": "Priority" },
+      "dueDate": { "label": "Due date" },
+      "timeEstimate": { "label": "Estimate (min)" },
+      "timeSpent": { "label": "Spent (min)" }
+    },
+    "page": {
+      "back": "Back to board",
+      "notFound": "Task not found",
+      "retry": "Retry",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "empty": "—"
+    },
+    "priority": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "assignees": {
+      "label": "Assignees",
+      "placeholder": "Select assignees",
+      "empty": "No assignees"
     }
   }
 }

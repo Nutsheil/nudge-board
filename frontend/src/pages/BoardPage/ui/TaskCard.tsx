@@ -1,11 +1,20 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { IconButton, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, AvatarGroup, Box, IconButton, Menu, MenuItem, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate, useParams } from 'react-router'
 
 import type { BoardTask } from '@/entities/board'
+import { ROUTES } from '@/shared/config'
+
+const PRIORITY_COLOR: Record<string, string> = {
+  LOW: 'success.main',
+  MEDIUM: 'info.main',
+  HIGH: 'warning.main',
+  URGENT: 'error.main',
+}
 
 interface Props {
   task: BoardTask
@@ -18,6 +27,9 @@ export const TaskCard = ({ task, onRename, onDelete }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const close = () => setAnchorEl(null)
+
+  const navigate = useNavigate()
+  const { workspaceId = '', boardId = '' } = useParams<{ workspaceId: string; boardId: string }>()
 
   const openMenu = (e: MouseEvent<HTMLElement>) => {
     e.stopPropagation()
@@ -49,6 +61,7 @@ export const TaskCard = ({ task, onRename, onDelete }: Props) => {
         '&:hover .task-card-kebab, &:focus-within .task-card-kebab': { opacity: 1 },
         '@media (hover: none)': { '& .task-card-kebab': { opacity: 1 } },
       }}
+      onClick={() => navigate(ROUTES.task(workspaceId, boardId, task.id))}
       {...attributes}
       {...listeners}
     >
@@ -73,6 +86,29 @@ export const TaskCard = ({ task, onRename, onDelete }: Props) => {
         >
           <MoreVertIcon fontSize='small' />
         </IconButton>
+      </Stack>
+      <Stack direction='row' spacing={1} sx={{ alignItems: 'center', mt: 1 }}>
+        <Tooltip title={t(`task.priority.${task.priority}`)}>
+          <Box
+            aria-label={t(`task.priority.${task.priority}`)}
+            sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: PRIORITY_COLOR[task.priority] }}
+          />
+        </Tooltip>
+        {task.dueDate && (
+          <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+            {new Date(task.dueDate).toLocaleDateString()}
+          </Typography>
+        )}
+        <Box sx={{ flex: 1 }} />
+        {task.assignees.length > 0 && (
+          <AvatarGroup max={3} sx={{ '& .MuiAvatar-root': { width: 22, height: 22, fontSize: 11 } }}>
+            {task.assignees.map((a) => (
+              <Tooltip key={a.id} title={a.name}>
+                <Avatar>{a.name.charAt(0).toUpperCase()}</Avatar>
+              </Tooltip>
+            ))}
+          </AvatarGroup>
+        )}
       </Stack>
       <Menu anchorEl={anchorEl} open={open} onClose={close}>
         <MenuItem

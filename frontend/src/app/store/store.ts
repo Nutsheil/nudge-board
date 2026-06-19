@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 
 import { boardApi } from '@/entities/board'
 import { columnApi } from '@/entities/column'
+import { memberApi } from '@/entities/member'
 import { sessionApi, sessionListener, sessionReducer, SESSION_SLICE_KEY } from '@/entities/session'
 import { taskApi } from '@/entities/task'
 import { workspaceApi } from '@/entities/workspace'
@@ -15,6 +16,7 @@ export const store = configureStore({
     [boardApi.reducerPath]: boardApi.reducer,
     [columnApi.reducerPath]: columnApi.reducer,
     [taskApi.reducerPath]: taskApi.reducer,
+    [memberApi.reducerPath]: memberApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(sessionListener.middleware).concat(
@@ -23,6 +25,7 @@ export const store = configureStore({
       boardApi.middleware,
       columnApi.middleware,
       taskApi.middleware,
+      memberApi.middleware,
     ),
 })
 

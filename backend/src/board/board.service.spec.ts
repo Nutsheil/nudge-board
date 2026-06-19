@@ -46,7 +46,7 @@ describe('BoardService', () => {
     expect(result).toBe(created);
   });
 
-  it('returns the board tree with columns and their tasks', async () => {
+  it('returns the board tree with columns and their enriched tasks', async () => {
     board.findFirst.mockResolvedValue({
       id: 'b1',
       name: 'A',
@@ -56,7 +56,17 @@ describe('BoardService', () => {
           id: 'c1',
           name: 'To Do',
           position: 1,
-          tasks: [{ id: 't1', columnId: 'c1', title: 'First', position: 1 }],
+          tasks: [
+            {
+              id: 't1',
+              columnId: 'c1',
+              title: 'First',
+              position: 1,
+              priority: 'HIGH',
+              dueDate: null,
+              assignees: [{ user: { id: 'u1', name: 'Ann' } }],
+            },
+          ],
         },
       ],
     });
@@ -74,24 +84,28 @@ describe('BoardService', () => {
             position: true,
             tasks: {
               orderBy: { position: 'asc' },
-              select: { id: true, columnId: true, title: true, position: true },
+              select: {
+                id: true,
+                columnId: true,
+                title: true,
+                position: true,
+                priority: true,
+                dueDate: true,
+                assignees: { select: { user: { select: { id: true, name: true } } } },
+              },
             },
           },
         },
       },
     });
-    expect(result).toEqual({
-      id: 'b1',
-      name: 'A',
-      description: null,
-      columns: [
-        {
-          id: 'c1',
-          name: 'To Do',
-          position: 1,
-          tasks: [{ id: 't1', columnId: 'c1', title: 'First', position: 1 }],
-        },
-      ],
+    expect(result.columns[0].tasks[0]).toEqual({
+      id: 't1',
+      columnId: 'c1',
+      title: 'First',
+      position: 1,
+      priority: 'HIGH',
+      dueDate: null,
+      assignees: [{ id: 'u1', name: 'Ann' }],
     });
   });
 

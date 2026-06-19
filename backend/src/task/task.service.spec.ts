@@ -4,6 +4,19 @@ import { type PrismaService } from '../prisma/prisma.service';
 import { TaskService } from './task.service';
 
 const SELECT = { id: true, columnId: true, title: true, position: true };
+const CARD_SELECT = { id: true, columnId: true, title: true, position: true, priority: true, dueDate: true };
+const DETAIL_SELECT = {
+  id: true,
+  columnId: true,
+  title: true,
+  description: true,
+  position: true,
+  priority: true,
+  timeEstimate: true,
+  timeSpent: true,
+  dueDate: true,
+  assignees: { select: { user: { select: { id: true, name: true, email: true } } } },
+};
 
 describe('TaskService', () => {
   const task = {
@@ -15,11 +28,19 @@ describe('TaskService', () => {
   };
   const column = { findFirst: jest.fn() };
   const $transaction = jest.fn();
-  const prisma = { task, column, $transaction } as unknown as PrismaService;
+  const workspaceMember = { findMany: jest.fn() };
+  const taskAssignee = { deleteMany: jest.fn(), createMany: jest.fn(), findMany: jest.fn() };
+  const prisma = { task, column, workspaceMember, taskAssignee, $transaction } as unknown as PrismaService;
   let service: TaskService;
 
   beforeEach(() => {
-    [...Object.values(task), column.findFirst, $transaction].forEach((fn) => fn.mockReset());
+    [
+      ...Object.values(task),
+      column.findFirst,
+      $transaction,
+      workspaceMember.findMany,
+      ...Object.values(taskAssignee),
+    ].forEach((fn) => fn.mockReset());
     service = new TaskService(prisma);
   });
 
@@ -27,7 +48,7 @@ describe('TaskService', () => {
     it('appends a task after the last position in the column', async () => {
       column.findFirst.mockResolvedValue({ id: 'col1' });
       task.findFirst.mockResolvedValue({ position: 3 });
-      const created = { id: 't1', columnId: 'col1', title: 'Write spec', position: 4 };
+      const created = { id: 't1', columnId: 'col1', title: 'Write spec', position: 4, priority: 'MEDIUM', dueDate: null };
       task.create.mockResolvedValue(created);
 
       const result = await service.create('w1', 'b1', 'col1', { title: 'Write spec' });
@@ -38,7 +59,7 @@ describe('TaskService', () => {
       });
       expect(task.create).toHaveBeenCalledWith({
         data: { columnId: 'col1', title: 'Write spec', position: 4 },
-        select: SELECT,
+        select: CARD_SELECT,
       });
       expect(result).toBe(created);
     });
@@ -46,13 +67,13 @@ describe('TaskService', () => {
     it('uses position 1 for the first task in the column', async () => {
       column.findFirst.mockResolvedValue({ id: 'col1' });
       task.findFirst.mockResolvedValue(null);
-      task.create.mockResolvedValue({ id: 't1', columnId: 'col1', title: 'X', position: 1 });
+      task.create.mockResolvedValue({ id: 't1', columnId: 'col1', title: 'X', position: 1, priority: 'MEDIUM', dueDate: null });
 
       await service.create('w1', 'b1', 'col1', { title: 'X' });
 
       expect(task.create).toHaveBeenCalledWith({
         data: { columnId: 'col1', title: 'X', position: 1 },
-        select: SELECT,
+        select: CARD_SELECT,
       });
     });
 
@@ -64,19 +85,59 @@ describe('TaskService', () => {
   });
 
   describe('update', () => {
-    it('renames after asserting ownership', async () => {
-      task.findFirst.mockResolvedValue({ id: 't1' });
-      const updated = { id: 't1', columnId: 'col1', title: 'Renamed', position: 2 };
-      task.update.mockResolvedValue(updated);
+    const detailRow = {
+      id: 't1',
+      columnId: 'col1',
+      title: 'Renamed',
+      description: 'desc',
+      position: 2,
+      priority: 'HIGH',
+      timeEstimate: 60,
+      timeSpent: 30,
+      dueDate: null,
+      assignees: [{ user: { id: 'u1', name: 'Ann', email: 'ann@x.io' } }],
+    };
 
-      const result = await service.update('w1', 'b1', 't1', { title: 'Renamed' });
+    it('updates only the provided fields and returns the flattened detail', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      task.update.mockResolvedValue(detailRow);
+
+      const result = await service.update('w1', 'b1', 't1', { title: 'Renamed', priority: 'HIGH' as never });
 
       expect(task.findFirst).toHaveBeenCalledWith({
         where: { id: 't1', column: { boardId: 'b1', board: { workspaceId: 'w1' } } },
         select: { id: true },
       });
-      expect(task.update).toHaveBeenCalledWith({ where: { id: 't1' }, data: { title: 'Renamed' }, select: SELECT });
-      expect(result).toBe(updated);
+      expect(task.update).toHaveBeenCalledWith({
+        where: { id: 't1' },
+        data: { title: 'Renamed', priority: 'HIGH' },
+        select: DETAIL_SELECT,
+      });
+      expect(result).toEqual({
+        id: 't1',
+        columnId: 'col1',
+        title: 'Renamed',
+        description: 'desc',
+        position: 2,
+        priority: 'HIGH',
+        timeEstimate: 60,
+        timeSpent: 30,
+        dueDate: null,
+        assignees: [{ id: 'u1', name: 'Ann', email: 'ann@x.io' }],
+      });
+    });
+
+    it('clears description and dueDate when null is sent, and parses dueDate strings', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      task.update.mockResolvedValue({ ...detailRow, description: null });
+
+      await service.update('w1', 'b1', 't1', { description: null, dueDate: '2026-07-01T00:00:00.000Z' });
+
+      expect(task.update).toHaveBeenCalledWith({
+        where: { id: 't1' },
+        data: { description: null, dueDate: new Date('2026-07-01T00:00:00.000Z') },
+        select: DETAIL_SELECT,
+      });
     });
 
     it('rejects rename of a task outside the board', async () => {
@@ -104,6 +165,36 @@ describe('TaskService', () => {
       task.findFirst.mockResolvedValue(null);
       await expect(service.remove('w1', 'b1', 'tX')).rejects.toBeInstanceOf(NotFoundException);
       expect(task.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getTask', () => {
+    it('returns the flattened task detail after asserting ownership', async () => {
+      task.findFirst
+        .mockResolvedValueOnce({ id: 't1' }) // assertTaskInBoard
+        .mockResolvedValueOnce({
+          id: 't1',
+          columnId: 'col1',
+          title: 'A',
+          description: null,
+          position: 1,
+          priority: 'MEDIUM',
+          timeEstimate: null,
+          timeSpent: 0,
+          dueDate: null,
+          assignees: [{ user: { id: 'u1', name: 'Ann', email: 'ann@x.io' } }],
+        });
+
+      const result = await service.getTask('w1', 'b1', 't1');
+
+      expect(task.findFirst).toHaveBeenNthCalledWith(2, { where: { id: 't1' }, select: DETAIL_SELECT });
+      expect(result.assignees).toEqual([{ id: 'u1', name: 'Ann', email: 'ann@x.io' }]);
+      expect(result.priority).toBe('MEDIUM');
+    });
+
+    it('rejects a task outside the board', async () => {
+      task.findFirst.mockResolvedValue(null);
+      await expect(service.getTask('w1', 'b1', 'tX')).rejects.toBeInstanceOf(NotFoundException);
     });
   });
 
@@ -270,6 +361,58 @@ describe('TaskService', () => {
         service.move('w1', 'b1', 't1', { targetColumnId: 'colX', afterId: null }),
       ).rejects.toBeInstanceOf(NotFoundException);
       expect(task.findMany).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setAssignees', () => {
+    it('replaces the assignee set after validating membership and returns the new users', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1', column: { board: { workspaceId: 'w1' } } });
+      workspaceMember.findMany.mockResolvedValue([{ userId: 'u1' }, { userId: 'u2' }]);
+      $transaction.mockResolvedValue(undefined);
+      taskAssignee.findMany.mockResolvedValue([
+        { user: { id: 'u1', name: 'Ann', email: 'ann@x.io' } },
+        { user: { id: 'u2', name: 'Bo', email: 'bo@x.io' } },
+      ]);
+
+      const result = await service.setAssignees('w1', 'b1', 't1', { userIds: ['u1', 'u2'] });
+
+      expect(workspaceMember.findMany).toHaveBeenCalledWith({
+        where: { workspaceId: 'w1', userId: { in: ['u1', 'u2'] } },
+        select: { userId: true },
+      });
+      expect($transaction).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([
+        { id: 'u1', name: 'Ann', email: 'ann@x.io' },
+        { id: 'u2', name: 'Bo', email: 'bo@x.io' },
+      ]);
+    });
+
+    it('clears all assignees when given an empty list (no membership query)', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      $transaction.mockResolvedValue(undefined);
+      taskAssignee.findMany.mockResolvedValue([]);
+
+      const result = await service.setAssignees('w1', 'b1', 't1', { userIds: [] });
+
+      expect(workspaceMember.findMany).not.toHaveBeenCalled();
+      expect(result).toEqual([]);
+    });
+
+    it('rejects when a userId is not a workspace member', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      workspaceMember.findMany.mockResolvedValue([{ userId: 'u1' }]); // u2 missing
+
+      await expect(
+        service.setAssignees('w1', 'b1', 't1', { userIds: ['u1', 'u2'] }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+      expect($transaction).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the task is outside the board', async () => {
+      task.findFirst.mockResolvedValue(null);
+      await expect(
+        service.setAssignees('w1', 'b1', 'tX', { userIds: [] }),
+      ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
 });

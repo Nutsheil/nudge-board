@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WorkspaceMemberGuard } from '../common/guards/workspace-member.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { MoveTaskDto } from './dto/move-task.dto';
+import { SetAssigneesDto } from './dto/set-assignees.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskService } from './task.service';
 
@@ -20,6 +21,15 @@ export class TaskController {
     @Body() dto: CreateTaskDto,
   ) {
     return this.taskService.create(workspaceId, boardId, columnId, dto);
+  }
+
+  @Get('tasks/:taskId')
+  getTask(
+    @Param('workspaceId') workspaceId: string,
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+  ) {
+    return this.taskService.getTask(workspaceId, boardId, taskId);
   }
 
   @Patch('tasks/:taskId')
@@ -50,5 +60,15 @@ export class TaskController {
     @Body() dto: MoveTaskDto,
   ) {
     return this.taskService.move(workspaceId, boardId, taskId, dto);
+  }
+
+  @Put('tasks/:taskId/assignees')
+  setAssignees(
+    @Param('workspaceId') workspaceId: string,
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+    @Body() dto: SetAssigneesDto,
+  ) {
+    return this.taskService.setAssignees(workspaceId, boardId, taskId, dto);
   }
 }

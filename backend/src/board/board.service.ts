@@ -38,7 +38,15 @@ export class BoardService {
             position: true,
             tasks: {
               orderBy: { position: 'asc' },
-              select: { id: true, columnId: true, title: true, position: true },
+              select: {
+                id: true,
+                columnId: true,
+                title: true,
+                position: true,
+                priority: true,
+                dueDate: true,
+                assignees: { select: { user: { select: { id: true, name: true } } } },
+              },
             },
           },
         },
@@ -49,7 +57,25 @@ export class BoardService {
       throw new NotFoundException('Board not found');
     }
 
-    return { id: board.id, name: board.name, description: board.description, columns: board.columns };
+    return {
+      id: board.id,
+      name: board.name,
+      description: board.description,
+      columns: board.columns.map((col) => ({
+        id: col.id,
+        name: col.name,
+        position: col.position,
+        tasks: col.tasks.map((task) => ({
+          id: task.id,
+          columnId: task.columnId,
+          title: task.title,
+          position: task.position,
+          priority: task.priority,
+          dueDate: task.dueDate,
+          assignees: task.assignees.map((a) => a.user),
+        })),
+      })),
+    };
   }
 
   async update(workspaceId: string, boardId: string, dto: UpdateBoardDto): Promise<BoardSummaryDto> {
