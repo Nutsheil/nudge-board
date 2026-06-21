@@ -1,4 +1,4 @@
-import type { Priority } from '@/entities/board'
+import type { LabelView, Priority } from '@/entities/board'
 
 export interface TaskDetailAssignee {
   id: string
@@ -17,4 +17,5 @@ export interface TaskDetail {
   timeSpent: number
   dueDate: string | null
   assignees: TaskDetailAssignee[]
+  labels: LabelView[]
 }

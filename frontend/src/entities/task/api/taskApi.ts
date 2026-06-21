@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { boardApi, type BoardTask, type Priority } from '@/entities/board'
+import { boardApi, type BoardTask, type LabelView, type Priority } from '@/entities/board'
+import type { Label } from '@/entities/label'
 import type { Member } from '@/entities/member'
 import { baseQueryWithReauth } from '@/entities/session'
 
@@ -69,7 +70,7 @@ export const taskApi = createApi({
             boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
               const col = draft.columns.find((c) => c.id === columnId)
               if (!col) return
-              col.tasks.push({ ...data, assignees: [] })
+              col.tasks.push({ ...data, assignees: [], labels: [] })
               col.tasks.sort((a, b) => a.position - b.position)
             }),
           )
@@ -168,6 +169,62 @@ export const taskApi = createApi({
       },
     }),
 
+    setLabels: builder.mutation<
+      LabelView[],
+      { workspaceId: string; boardId: string; taskId: string; labelIds: string[]; labels: Label[] }
+    >({
+      query: ({ workspaceId, boardId, taskId, labelIds }) => ({
+        url: `workspaces/${workspaceId}/boards/${boardId}/tasks/${taskId}/labels`,
+        method: 'PUT',
+        body: { labelIds },
+      }),
+      async onQueryStarted(
+        { workspaceId, boardId, taskId, labelIds, labels },
+        { dispatch, queryFulfilled },
+      ) {
+        const selected: LabelView[] = labels
+          .filter((l) => labelIds.includes(l.id))
+          .map((l) => ({ id: l.id, name: l.name, color: l.color }))
+        const detailPatch = dispatch(
+          taskApi.util.updateQueryData('getTask', { workspaceId, boardId, taskId }, (draft) => {
+            draft.labels = selected
+          }),
+        )
+        const boardPatch = dispatch(
+          boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
+            for (const col of draft.columns) {
+              const task = col.tasks.find((t) => t.id === taskId)
+              if (!task) continue
+              task.labels = selected
+              break
+            }
+          }),
+        )
+        try {
+          const { data } = await queryFulfilled
+          // Reconcile with the server's canonical order.
+          dispatch(
+            taskApi.util.updateQueryData('getTask', { workspaceId, boardId, taskId }, (draft) => {
+              draft.labels = data
+            }),
+          )
+          dispatch(
+            boardApi.util.updateQueryData('getBoard', { workspaceId, boardId }, (draft) => {
+              for (const col of draft.columns) {
+                const task = col.tasks.find((t) => t.id === taskId)
+                if (!task) continue
+                task.labels = data
+                break
+              }
+            }),
+          )
+        } catch {
+          detailPatch.undo()
+          boardPatch.undo()
+        }
+      },
+    }),
+
     deleteTask: builder.mutation<void, DeleteTaskArgs>({
       query: ({ workspaceId, boardId, taskId }) => ({
         url: `workspaces/${workspaceId}/boards/${boardId}/tasks/${taskId}`,
@@ -246,4 +303,5 @@ export const {
   useDeleteTaskMutation,
   useMoveTaskMutation,
   useSetAssigneesMutation,
+  useSetLabelsMutation,
 } = taskApi

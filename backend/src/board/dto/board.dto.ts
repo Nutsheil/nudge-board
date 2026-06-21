@@ -1,4 +1,4 @@
-import type { Priority } from '../../../generated/prisma/client';
+import type { LabelColor, Priority } from '../../../generated/prisma/client';
 
 export interface BoardSummaryDto {
   id: string;
@@ -12,6 +12,12 @@ export interface BoardAssigneeDto {
   name: string;
 }
 
+export interface BoardLabelDto {
+  id: string;
+  name: string;
+  color: LabelColor;
+}
+
 export interface BoardTaskDto {
   id: string;
   columnId: string;
@@ -20,6 +26,7 @@ export interface BoardTaskDto {
   priority: Priority;
   dueDate: Date | null;
   assignees: BoardAssigneeDto[];
+  labels: BoardLabelDto[];
 }
 
 export interface BoardColumnDto {

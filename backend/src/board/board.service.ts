@@ -46,6 +46,7 @@ export class BoardService {
                 priority: true,
                 dueDate: true,
                 assignees: { select: { user: { select: { id: true, name: true } } } },
+                labels: { select: { label: { select: { id: true, name: true, color: true } } } },
               },
             },
           },
@@ -73,6 +74,7 @@ export class BoardService {
           priority: task.priority,
           dueDate: task.dueDate,
           assignees: task.assignees.map((a) => a.user),
+          labels: task.labels.map((l) => l.label),
         })),
       })),
     };

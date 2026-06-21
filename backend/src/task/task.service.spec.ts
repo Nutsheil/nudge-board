@@ -16,6 +16,7 @@ const DETAIL_SELECT = {
   timeSpent: true,
   dueDate: true,
   assignees: { select: { user: { select: { id: true, name: true, email: true } } } },
+  labels: { select: { label: { select: { id: true, name: true, color: true } } } },
 };
 
 describe('TaskService', () => {
@@ -30,7 +31,9 @@ describe('TaskService', () => {
   const $transaction = jest.fn();
   const workspaceMember = { findMany: jest.fn() };
   const taskAssignee = { deleteMany: jest.fn(), createMany: jest.fn(), findMany: jest.fn() };
-  const prisma = { task, column, workspaceMember, taskAssignee, $transaction } as unknown as PrismaService;
+  const label = { findMany: jest.fn() };
+  const taskLabel = { deleteMany: jest.fn(), createMany: jest.fn(), findMany: jest.fn() };
+  const prisma = { task, column, workspaceMember, taskAssignee, label, taskLabel, $transaction } as unknown as PrismaService;
   let service: TaskService;
 
   beforeEach(() => {
@@ -40,6 +43,8 @@ describe('TaskService', () => {
       $transaction,
       workspaceMember.findMany,
       ...Object.values(taskAssignee),
+      label.findMany,
+      ...Object.values(taskLabel),
     ].forEach((fn) => fn.mockReset());
     service = new TaskService(prisma);
   });
@@ -96,6 +101,7 @@ describe('TaskService', () => {
       timeSpent: 30,
       dueDate: null,
       assignees: [{ user: { id: 'u1', name: 'Ann', email: 'ann@x.io' } }],
+      labels: [],
     };
 
     it('updates only the provided fields and returns the flattened detail', async () => {
@@ -124,6 +130,7 @@ describe('TaskService', () => {
         timeSpent: 30,
         dueDate: null,
         assignees: [{ id: 'u1', name: 'Ann', email: 'ann@x.io' }],
+        labels: [],
       });
     });
 
@@ -183,6 +190,7 @@ describe('TaskService', () => {
           timeSpent: 0,
           dueDate: null,
           assignees: [{ user: { id: 'u1', name: 'Ann', email: 'ann@x.io' } }],
+          labels: [],
         });
 
       const result = await service.getTask('w1', 'b1', 't1');
@@ -413,6 +421,51 @@ describe('TaskService', () => {
       await expect(
         service.setAssignees('w1', 'b1', 'tX', { userIds: [] }),
       ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('setLabels', () => {
+    const found = [{ label: { id: 'l1', name: 'Bug', color: 'RED' } }];
+
+    it('replaces the label set after validating workspace ownership', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      label.findMany.mockResolvedValue([{ id: 'l1' }]);
+      $transaction.mockResolvedValue([]);
+      taskLabel.findMany.mockResolvedValue(found);
+
+      const result = await service.setLabels('w1', 'b1', 't1', { labelIds: ['l1', 'l1'] });
+
+      // deduped to a single id, validated against the workspace
+      expect(label.findMany).toHaveBeenCalledWith({
+        where: { workspaceId: 'w1', id: { in: ['l1'] } },
+        select: { id: true },
+      });
+      expect(taskLabel.deleteMany).toHaveBeenCalledWith({ where: { taskId: 't1' } });
+      expect(taskLabel.createMany).toHaveBeenCalledWith({ data: [{ taskId: 't1', labelId: 'l1' }] });
+      expect($transaction).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([{ id: 'l1', name: 'Bug', color: 'RED' }]);
+    });
+
+    it('throws 404 when a label is not in the workspace', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      label.findMany.mockResolvedValue([]); // none of the ids matched
+
+      await expect(service.setLabels('w1', 'b1', 't1', { labelIds: ['l1'] })).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect($transaction).not.toHaveBeenCalled();
+    });
+
+    it('clears all labels when given an empty list', async () => {
+      task.findFirst.mockResolvedValue({ id: 't1' });
+      $transaction.mockResolvedValue([]);
+      taskLabel.findMany.mockResolvedValue([]);
+
+      const result = await service.setLabels('w1', 'b1', 't1', { labelIds: [] });
+
+      expect(label.findMany).not.toHaveBeenCalled();
+      expect(taskLabel.createMany).toHaveBeenCalledWith({ data: [] });
+      expect(result).toEqual([]);
     });
   });
 });

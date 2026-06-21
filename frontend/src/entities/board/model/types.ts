@@ -1,8 +1,16 @@
+import type { LabelColor } from '@/entities/label'
+
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
 
 export interface TaskAssigneeView {
   id: string
   name: string
+}
+
+export interface LabelView {
+  id: string
+  name: string
+  color: LabelColor
 }
 
 export interface Board {
@@ -20,6 +28,7 @@ export interface BoardTask {
   priority: Priority
   dueDate: string | null
   assignees: TaskAssigneeView[]
+  labels: LabelView[]
 }
 
 export interface BoardColumn {

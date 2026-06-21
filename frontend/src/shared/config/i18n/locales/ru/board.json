@@ -36,6 +36,13 @@
     "field": {
       "name": { "label": "Название", "placeholder": "Например, Спринт 1" },
       "description": { "label": "Описание", "placeholder": "О чём эта доска (необязательно)" }
+    },
+    "filter": {
+      "trigger": "Фильтр",
+      "labels": "Метки",
+      "priority": "Приоритет",
+      "clear": "Сбросить",
+      "empty": "Нет меток для фильтра"
     }
   }
 }

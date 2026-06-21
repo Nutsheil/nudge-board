@@ -5,6 +5,7 @@ import { WorkspaceMemberGuard } from '../common/guards/workspace-member.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { MoveTaskDto } from './dto/move-task.dto';
 import { SetAssigneesDto } from './dto/set-assignees.dto';
+import { SetLabelsDto } from './dto/set-labels.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskService } from './task.service';
 
@@ -70,5 +71,15 @@ export class TaskController {
     @Body() dto: SetAssigneesDto,
   ) {
     return this.taskService.setAssignees(workspaceId, boardId, taskId, dto);
+  }
+
+  @Put('tasks/:taskId/labels')
+  setLabels(
+    @Param('workspaceId') workspaceId: string,
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+    @Body() dto: SetLabelsDto,
+  ) {
+    return this.taskService.setLabels(workspaceId, boardId, taskId, dto);
   }
 }

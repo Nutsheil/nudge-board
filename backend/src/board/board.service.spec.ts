@@ -65,6 +65,7 @@ describe('BoardService', () => {
               priority: 'HIGH',
               dueDate: null,
               assignees: [{ user: { id: 'u1', name: 'Ann' } }],
+              labels: [{ label: { id: 'lbl1', name: 'Bug', color: 'RED' } }],
             },
           ],
         },
@@ -92,6 +93,7 @@ describe('BoardService', () => {
                 priority: true,
                 dueDate: true,
                 assignees: { select: { user: { select: { id: true, name: true } } } },
+                labels: { select: { label: { select: { id: true, name: true, color: true } } } },
               },
             },
           },
@@ -106,6 +108,7 @@ describe('BoardService', () => {
       priority: 'HIGH',
       dueDate: null,
       assignees: [{ id: 'u1', name: 'Ann' }],
+      labels: [{ id: 'lbl1', name: 'Bug', color: 'RED' }],
     });
   });
 

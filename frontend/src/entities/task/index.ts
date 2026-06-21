@@ -5,6 +5,7 @@ export {
   useGetTaskQuery,
   useMoveTaskMutation,
   useSetAssigneesMutation,
+  useSetLabelsMutation,
   useUpdateTaskMutation,
 } from './api/taskApi'
 export { taskSchema, taskEditSchema } from './model/schema'

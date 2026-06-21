@@ -36,6 +36,13 @@
     "field": {
       "name": { "label": "Name", "placeholder": "e.g. Sprint 1" },
       "description": { "label": "Description", "placeholder": "What this board is for (optional)" }
+    },
+    "filter": {
+      "trigger": "Filter",
+      "labels": "Labels",
+      "priority": "Priority",
+      "clear": "Clear",
+      "empty": "No labels to filter by"
     }
   }
 }

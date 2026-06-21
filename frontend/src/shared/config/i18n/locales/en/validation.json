@@ -38,6 +38,10 @@
     },
     "taskTime": {
       "invalid": "Enter a non-negative whole number"
+    },
+    "labelName": {
+      "required": "Enter a label name",
+      "tooLong": "No more than 30 characters"
     }
   }
 }

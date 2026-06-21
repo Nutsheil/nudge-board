@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
+import { BoardFilter, EMPTY_FILTER, matchesFilter, type BoardFilterState } from '@/features/board-filter'
 import { CreateColumnInline } from '@/features/column-create'
 import { DeleteColumnDialog } from '@/features/column-delete'
 import { RenameColumnDialog } from '@/features/column-edit'
@@ -24,9 +25,10 @@ import { BoardError, Column, ColumnsSkeleton } from './ui'
 const BoardPage = () => {
   const { workspaceId = '', boardId = '' } = useParams<{ workspaceId: string; boardId: string }>()
   const navigate = useNavigate()
-  const { t } = useTranslation(['column', 'errors'])
+  const { t } = useTranslation(['column', 'board', 'errors'])
   const { data: board, isLoading, isError, refetch } = useGetBoardQuery({ workspaceId, boardId })
 
+  const [filter, setFilter] = useState<BoardFilterState>(EMPTY_FILTER)
   const [renameTarget, setRenameTarget] = useState<BoardColumn | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<BoardColumn | null>(null)
   const [renameTaskTarget, setRenameTaskTarget] = useState<BoardTask | null>(null)
@@ -141,7 +143,7 @@ const BoardPage = () => {
                 key={column.id}
                 workspaceId={workspaceId}
                 boardId={boardId}
-                column={column}
+                column={{ ...column, tasks: column.tasks.filter((task) => matchesFilter(task, filter)) }}
                 onRename={() => setRenameTarget(column)}
                 onDelete={() => setDeleteTarget(column)}
                 onRenameTask={setRenameTaskTarget}
@@ -167,7 +169,10 @@ const BoardPage = () => {
           >
             {t('column.board.back')}
           </Button>
-          <Typography variant='h4'>{board?.name ?? ''}</Typography>
+          <Stack direction='row' spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant='h4'>{board?.name ?? ''}</Typography>
+            <BoardFilter workspaceId={workspaceId} state={filter} onChange={setFilter} />
+          </Stack>
         </Stack>
         {renderContent()}
       </Stack>

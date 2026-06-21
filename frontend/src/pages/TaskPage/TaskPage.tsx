@@ -16,7 +16,9 @@ import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
+import { LabelPicker } from '@/features/label-picker'
 import type { Priority } from '@/entities/board'
+import { labelChipSx, useGetLabelsQuery } from '@/entities/label'
 import { useGetMembersQuery } from '@/entities/member'
 import {
   type TaskDetail,
@@ -25,6 +27,7 @@ import {
   taskEditSchema,
   useGetTaskQuery,
   useSetAssigneesMutation,
+  useSetLabelsMutation,
   useUpdateTaskMutation,
 } from '@/entities/task'
 import { getErrorKey } from '@/shared/api/errors'
@@ -61,16 +64,19 @@ const TaskPage = () => {
     taskId: string
   }>()
   const navigate = useNavigate()
-  const { t } = useTranslation(['task', 'errors'])
+  const { t } = useTranslation(['task', 'label', 'errors'])
   const { enqueueSnackbar } = useSnackbar()
 
   const { data: task, isLoading, isError, refetch } = useGetTaskQuery({ workspaceId, boardId, taskId })
   const { data: members = [] } = useGetMembersQuery(workspaceId)
+  const { data: labels = [] } = useGetLabelsQuery(workspaceId)
   const [updateTask] = useUpdateTaskMutation()
   const [setAssignees] = useSetAssigneesMutation()
+  const [setLabels] = useSetLabelsMutation()
 
   const [mode, setMode] = useState<'view' | 'edit'>('view')
   const [assigneeIds, setAssigneeIds] = useState<string[]>([])
+  const [labelIds, setLabelIds] = useState<string[]>([])
 
   const back = () => navigate(ROUTES.board(workspaceId, boardId))
 
@@ -99,6 +105,7 @@ const TaskPage = () => {
 
   const startEdit = () => {
     setAssigneeIds(loaded.assignees.map((a) => a.id))
+    setLabelIds(loaded.labels.map((l) => l.id))
     setMode('edit')
   }
 
@@ -141,6 +148,18 @@ const TaskPage = () => {
       }
     } catch (err) {
       enqueueSnackbar(t(getErrorKey(err, { fallback: 'errors.task.assigneesFailed' })), { variant: 'error' })
+      return
+    }
+
+    const labelsChanged =
+      [...labelIds].sort().join(',') !== loaded.labels.map((l) => l.id).sort().join(',')
+
+    try {
+      if (labelsChanged) {
+        await setLabels({ workspaceId, boardId, taskId, labelIds, labels }).unwrap()
+      }
+    } catch (err) {
+      enqueueSnackbar(t(getErrorKey(err, { fallback: 'errors.label.setFailed' })), { variant: 'error' })
       return
     }
 
@@ -190,6 +209,17 @@ const TaskPage = () => {
               </Box>
             ) : (
               t('task.assignees.empty')
+            )}
+          </ViewField>
+          <ViewField label={t('label.field.labels')}>
+            {loaded.labels.length > 0 ? (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                {loaded.labels.map((l) => (
+                  <Chip key={l.id} size='small' label={l.name} sx={labelChipSx(l.color)} />
+                ))}
+              </Box>
+            ) : (
+              t('label.field.empty')
             )}
           </ViewField>
           <Button startIcon={<EditIcon />} variant='contained' onClick={startEdit} sx={{ alignSelf: 'flex-start' }}>
@@ -274,6 +304,12 @@ const TaskPage = () => {
                 </MenuItem>
               ))}
             </TextField>
+            <Box>
+              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                {t('label.field.labels')}
+              </Typography>
+              <LabelPicker workspaceId={workspaceId} selectedIds={labelIds} onChange={setLabelIds} />
+            </Box>
             <Stack direction='row' spacing={1.5} sx={{ justifyContent: 'flex-end' }}>
               <Button onClick={() => setMode('view')} variant='outlined'>
                 {t('task.page.cancel')}

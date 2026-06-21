@@ -1,0 +1,23 @@
+{
+  "label": {
+    "picker": {
+      "trigger": "Labels",
+      "title": "Labels",
+      "search": "Search or create…",
+      "create": "Create \"{{name}}\"",
+      "empty": "No labels yet",
+      "noMatches": "No matches",
+      "edit": "Edit label",
+      "delete": "Delete label",
+      "color": "Color",
+      "name": "Name",
+      "save": "Save",
+      "cancel": "Cancel",
+      "deleteConfirm": "Delete label \"{{name}}\" from the workspace?"
+    },
+    "field": {
+      "labels": "Labels",
+      "empty": "No labels"
+    }
+  }
+}

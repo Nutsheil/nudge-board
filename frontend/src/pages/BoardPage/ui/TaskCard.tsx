@@ -1,12 +1,13 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { Avatar, AvatarGroup, Box, IconButton, Menu, MenuItem, Paper, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, AvatarGroup, Box, Chip, IconButton, Menu, MenuItem, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
 import type { BoardTask } from '@/entities/board'
+import { labelChipSx } from '@/entities/label'
 import { ROUTES } from '@/shared/config'
 
 const PRIORITY_COLOR: Record<string, string> = {
@@ -87,6 +88,13 @@ export const TaskCard = ({ task, onRename, onDelete }: Props) => {
           <MoreVertIcon fontSize='small' />
         </IconButton>
       </Stack>
+      {task.labels.length > 0 && (
+        <Stack direction='row' spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+          {task.labels.map((l) => (
+            <Chip key={l.id} size='small' label={l.name} sx={[{ height: 20 }, labelChipSx(l.color)]} />
+          ))}
+        </Stack>
+      )}
       <Stack direction='row' spacing={1} sx={{ alignItems: 'center', mt: 1 }}>
         <Tooltip title={t(`task.priority.${task.priority}`)}>
           <Box

@@ -5,8 +5,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import type { CreateTaskDto } from './dto/create-task.dto';
 import type { MoveTaskDto } from './dto/move-task.dto';
 import type { SetAssigneesDto } from './dto/set-assignees.dto';
+import type { SetLabelsDto } from './dto/set-labels.dto';
 import type { TaskDto } from './dto/task.dto';
-import type { AssigneeDto, TaskDetailDto } from './dto/task-detail.dto';
+import type { AssigneeDto, TaskDetailDto, TaskLabelDto } from './dto/task-detail.dto';
 import type { UpdateTaskDto } from './dto/update-task.dto';
 
 const TASK_SELECT = { id: true, columnId: true, title: true, position: true } as const;
@@ -24,6 +25,7 @@ const DETAIL_SELECT = {
   timeSpent: true,
   dueDate: true,
   assignees: { select: { user: { select: { id: true, name: true, email: true } } } },
+  labels: { select: { label: { select: { id: true, name: true, color: true } } } },
 } as const;
 
 type DetailRow = {
@@ -37,6 +39,7 @@ type DetailRow = {
   timeSpent: number;
   dueDate: Date | null;
   assignees: { user: AssigneeDto }[];
+  labels: { label: TaskLabelDto }[];
 };
 
 @Injectable()
@@ -96,6 +99,7 @@ export class TaskService {
       timeSpent: row.timeSpent,
       dueDate: row.dueDate,
       assignees: row.assignees.map((a) => a.user),
+      labels: row.labels.map((l) => l.label),
     };
   }
 
@@ -140,6 +144,38 @@ export class TaskService {
       orderBy: { assignedAt: 'asc' },
     });
     return rows.map((r) => r.user);
+  }
+
+  async setLabels(
+    workspaceId: string,
+    boardId: string,
+    taskId: string,
+    dto: SetLabelsDto,
+  ): Promise<TaskLabelDto[]> {
+    await this.assertTaskInBoard(workspaceId, boardId, taskId);
+
+    const labelIds = [...new Set(dto.labelIds)];
+    if (labelIds.length > 0) {
+      const labels = await this.prisma.label.findMany({
+        where: { workspaceId, id: { in: labelIds } },
+        select: { id: true },
+      });
+      if (labels.length !== labelIds.length) {
+        throw new NotFoundException('Label not found');
+      }
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.taskLabel.deleteMany({ where: { taskId } }),
+      this.prisma.taskLabel.createMany({ data: labelIds.map((labelId) => ({ taskId, labelId })) }),
+    ]);
+
+    const rows = await this.prisma.taskLabel.findMany({
+      where: { taskId },
+      select: { label: { select: { id: true, name: true, color: true } } },
+      orderBy: { label: { name: 'asc' } },
+    });
+    return rows.map((r) => r.label);
   }
 
   async remove(workspaceId: string, boardId: string, taskId: string): Promise<void> {
