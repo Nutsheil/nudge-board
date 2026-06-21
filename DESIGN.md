@@ -188,6 +188,7 @@ The component character is **refined and precise**: quiet at rest, exact on inte
 ### Chips / Pills
 - **Style:** Card background (#f4f4f5), Graphite 2 text, no border. Hover lifts to Hairline (#e4e4e7).
 - **Use:** Tags, filters, tech labels. Selected state uses the coral signal, not a heavier fill.
+- **Label chips (exception — color IS the identity):** Task labels carry a user-chosen hue from a fixed 10-token palette (`LabelColor`), so they deviate from the neutral chip rule by design. They render as a soft tint of the hue with text shifted for legibility, theme-aware: light = `bgcolor alpha(hue,0.14)` + `darken(hue,0.5)` text; dark = `bgcolor alpha(hue,0.20)` + `lighten(hue,0.3)` text; plus a 1px `alpha(hue,~0.3)` border for definition. Factors are tuned so every palette hue clears WCAG AA (≥4.5:1) on both themes' surfaces — the raw hue as text on a same-hue tint fails (amber/green ~1.8:1 in light). Tokens + the `labelChipSx(color)` helper live in `frontend/src/entities/label/lib/labelColors.ts`. Labels stay informational (never coral), so the One Signal Rule holds.
 
 ### Cards / Containers
 - **Corner Style:** 12px radius.
